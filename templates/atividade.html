@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atividade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100 min-h-screen">
+    <!-- Navbar -->
+    <div class="bg-green-800 text-white p-4 flex justify-between">
+      <h1 class="font-bold">Projeto Walker</h1>
+      <a href="/dashboard" class="hover:underline">Voltar</a>
+    </div>
+
+    <div class="max-w-4xl mx-auto p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">
+        Atividades Disponíveis
+      </h2>
+
+      <!-- Card da atividade -->
+      <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+        <h3 class="text-lg font-semibold text-gray-800">
+          Matemática - Equações
+        </h3>
+
+        <p class="text-gray-600 mt-2">Resolver os exercícios da página 45.</p>
+
+        <p class="text-sm text-gray-500 mt-2">Prazo: 15/04/2026</p>
+
+        <!-- Form de envio -->
+        <form
+          action="/enviar-atividade"
+          method="post"
+          enctype="multipart/form-data"
+          class="mt-4 space-y-3"
+        >
+          <!-- ID oculto da atividade -->
+          <input type="hidden" name="id_atividade" value="1" />
+
+          <input type="file" name="arquivo" required class="w-full" />
+
+          <button
+            type="submit"
+            class="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
+          >
+            Enviar atividade
+          </button>
+        </form>
+      </div>
+
+      <!-- Exemplo de atividade já enviada -->
+      <div>
+        <br>
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <h3 class="text-lg font-semibold text-gray-800">
+            AV1
+          </h3>
+          <p class="text-sm text-gray-500 mt-2">Já enviada</p>
+          <p class="text-sm text-gray-500 mt-2">
+          Pontos: 0/0
+          </p>
+          <span
+            class="inline-block mt-3 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
+          >
+            Pendente de correção
+          </span>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md mt-4">
+          <h3 class="text-lg font-semibold text-gray-800">
+            AV2
+          </h3>
+          <p class="text-sm text-gray-500 mt-2">Já enviada</p>
+          <p class="text-sm text-gray-500 mt-2">
+          Pontos: 0/0
+          </p>
+          <span
+            class="inline-block mt-3 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
+          >
+            Pendente de correção
+          </span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

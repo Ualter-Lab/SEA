@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100 min-h-screen">
+    <!-- Navbar -->
+    <div class="bg-green-800 text-white p-4 flex justify-between">
+      <h1 class="font-bold">Projeto Walker</h1>
+    </div>
+
+    <div class="max-w-6xl mx-auto p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Suas Turmas</h2>
+
+      <!-- Turmas -->
+      <div class="grid md:grid-cols-3 gap-4 mb-8">
+        <!-- Turma Card -->
+        <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
+          <h3 class="font-semibold text-gray-800">3º A Informática</h3>
+          <p class="text-sm text-gray-500">28 alunos</p>
+
+          <a
+            href="/turma/1"
+            class="mt-3 inline-block text-green-700 hover:underline"
+          >
+            Ver turma
+          </a>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
+          <h3 class="font-semibold text-gray-800">2º B</h3>
+          <p class="text-sm text-gray-500">25 alunos</p>
+
+          <a
+            href="/turma/2"
+            class="mt-3 inline-block text-green-700 hover:underline"
+          >
+            Ver turma
+          </a>
+        </div>
+      </div>
+
+      <!-- Criar atividade -->
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+          Criar Nova Atividade
+        </h3>
+
+        <form action="/criar-atividade" method="post" class="space-y-4">
+          <!-- Título -->
+          <input
+            type="text"
+            name="titulo"
+            placeholder="Título da atividade"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-600"
+          />
+
+          <!-- Descrição -->
+          <textarea
+            name="descricao"
+            placeholder="Descrição"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-600"
+          ></textarea>
+
+          <!---> Seleção de turma -->
+          <div>
+            <label class="text-sm text-gray-700">Enviar para:</label>
+
+            <select
+              name="turma"
+              class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-600"
+            >
+              <option value="todas">Todas as turmas</option>
+              <option value="1">3º A Informática</option>
+              <option value="2">2º B</option>
+            </select>
+          </div>
+
+          <button
+            class="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
+          >
+            Criar atividade
+          </button>
+        </form>
+      </div>
+
+      <!-- Atividades -->
+      <div class="bg-white p-6 rounded-xl shadow mt-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Atividades Recentes</h2>
+
+        <div class="space-y-4">
+          <!-- Atividade Card -->
+          <div class="bg-white p-5 rounded-xl shadow">
+            <h3 class="font-semibold text-gray-800">Atividade 1</h3>
+            <p class="text-sm text-gray-500">Enviada para 3º A Informática</p>
+            <p class="mt-2 text-gray-700">Descrição breve da atividade...</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl shadow">
+            <h3 class="font-semibold text-gray-800">Atividade 2</h3>
+            <p class="text-sm text-gray-500">Enviada para todas as turmas</p>
+            <p class="mt-2 text-gray-700">Descrição breve da atividade...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+</html>

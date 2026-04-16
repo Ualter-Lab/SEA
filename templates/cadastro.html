@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
+      <!-- Título -->
+      <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">
+        Criar Conta
+      </h1>
+
+      <form action="/cadastro" method="post" class="space-y-4">
+        <!-- Nome -->
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700">
+            Nome
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+        </div>
+
+        <!-- Usuário -->
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700">
+            Usuário
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+        </div>
+
+        <!-- Senha -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">
+            Senha
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+        </div>
+
+        <!-- Botão -->
+        <button
+          type="submit"
+          class="w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-200"
+        >
+          Cadastrar
+        </button>
+      </form>
+
+      <!-- Rodapé -->
+      <p class="text-sm text-gray-500 text-center mt-6">
+        Já tem conta?
+        <a href="/login" class="text-green-700 hover:underline"> Entrar </a>
+      </p>
+    </div>
+  </body>
+</html>

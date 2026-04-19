@@ -8,9 +8,10 @@
   </head>
 
   <body class="bg-gray-100 min-h-screen">
+    
     <!-- Navbar -->
     <div class="bg-green-800 text-white p-4 flex justify-between">
-      <h1 class="font-bold">Projeto Walker</h1>
+      <h1 class="font-bold">SEA - IFAL</h1>
     </div>
 
     <div class="max-w-6xl mx-auto p-6">
@@ -21,7 +22,6 @@
         <!-- Turma Card -->
         <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
           <h3 class="font-semibold text-gray-800">3º A Informática</h3>
-          <p class="text-sm text-gray-500">28 alunos</p>
 
           <a
             href="/turma/1"
@@ -33,8 +33,6 @@
 
         <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
           <h3 class="font-semibold text-gray-800">2º B</h3>
-          <p class="text-sm text-gray-500">25 alunos</p>
-
           <a
             href="/turma/2"
             class="mt-3 inline-block text-green-700 hover:underline"
@@ -43,6 +41,9 @@
           </a>
         </div>
       </div>
+
+      <!-- Criar turma-->
+      
 
       <!-- Criar atividade -->
       <div class="bg-white p-6 rounded-xl shadow">
@@ -66,7 +67,15 @@
             class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-600"
           ></textarea>
 
-          <!---> Seleção de turma -->
+          <!-- Data de entrega -->
+          <input
+            type="date"
+            name="data_entrega"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-600"
+          />
+
+          <!--- Seleção de turma -->
+
           <div>
             <label class="text-sm text-gray-700">Enviar para:</label>
 

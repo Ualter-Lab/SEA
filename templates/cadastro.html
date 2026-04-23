@@ -48,21 +48,25 @@
           />
         </div>
 
-        <!-- Matricula -->
+
+        <!-- Curso-->
         <div>
-          <label
-            for="matricula"
-            class="block text-sm font-medium text-gray-700"
-          >
-            Matrícula
+          <label for="curso" class="block text-sm font-medium text-gray-700">
+            Curso
           </label>
-          <input
-            type="number"
-            id="matricula"
-            name="matricula"
+          <select
+            name="turma"
+            id="turma"
             required
             class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          />
+          >
+            <option value="">Selecione a turma</option>
+            <option value="PF">Professor</option>
+            <option value="DS">Desenvolvimento de Sistema</option>
+            <option value="MA">Meio Ambiente</option>
+            <option value="GT">Guia de Turismo</option>
+            <option value="IM">Instrumento Musical</option>
+          </select>
         </div>
 
         <!-- Série -->
@@ -100,23 +104,21 @@
           </select>
         </div>
 
-        <!-- Curso-->
+         <!-- Matricula -->
         <div>
-          <label for="curso" class="block text-sm font-medium text-gray-700">
-            Curso
+          <label
+            for="matricula"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Matrícula
           </label>
-          <select
-            name="turma"
-            id="turma"
+          <input
+            type="number"
+            id="matricula"
+            name="matricula"
             required
             class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          >
-            <option value="">Selecione a turma</option>
-            <option value="DS">Desenvolvimento de Sistema</option>
-            <option value="MA">Meio Ambiente</option>
-            <option value="GT">Guia de Turismo</option>
-            <option value="IM">Instrumento Musical</option>
-          </select>
+          />
         </div>
 
         <!-- Senha -->

@@ -70,7 +70,7 @@
         </div>
 
         <!-- Série -->
-        <div>
+        <div id="div_serie">
           <label for="serie" class="block text-sm font-medium text-gray-700">
             Série
           </label>
@@ -88,7 +88,7 @@
         </div>
 
         <!-- Turma -->
-        <div>
+        <div id="div_turma">
           <label for="turma" class="block text-sm font-medium text-gray-700">
             Turma
           </label>
@@ -105,7 +105,7 @@
         </div>
 
          <!-- Matricula -->
-        <div>
+        <div id="div_matricula">
           <label
             for="matricula"
             class="block text-sm font-medium text-gray-700"
@@ -166,3 +166,33 @@
     </div>
   </body>
 </html>
+
+<script>
+  const campoCurso = document.getElementById('turma'); // Referenciando o select de curso
+  const divSerie = document.getElementById('div_serie');
+  const divTurma = document.getElementById('div_turma');
+  const divMatricula = document.getElementById('div_matricula');
+
+  campoCurso.addEventListener('change', function() {
+    // Se o valor selecionado for 'PF' (Professor)
+    if (this.value === 'PF') {
+      divSerie.classList.add('hidden');
+      divTurma.classList.add('hidden');
+      divMatricula.classList.add('hidden');
+      
+      // Opcional: remover o 'required' para o formulário deixar enviar
+      divSerie.querySelector('select').required = false;
+      divTurma.querySelector('select').required = false;
+      divMatricula.querySelector('input').required = false;
+    } else {
+      // Se for qualquer outra coisa (aluno), mostra de novo
+      divSerie.classList.remove('hidden');
+      divTurma.classList.remove('hidden');
+      divMatricula.classList.remove('hidden');
+      
+      divSerie.querySelector('select').required = true;
+      divTurma.querySelector('select').required = true;
+      divMatricula.querySelector('input').required = true;
+    }
+  });
+</script>

@@ -55,17 +55,18 @@
             Curso
           </label>
           <select
-            name="turma"
-            id="turma"
+            name="curso"
+            id="curso"
             required
             class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
           >
-            <option value="">Selecione a turma</option>
+            <option value="">Selecione o curso</option>
             <option value="PF">Professor</option>
             <option value="DS">Desenvolvimento de Sistema</option>
             <option value="MA">Meio Ambiente</option>
             <option value="GT">Guia de Turismo</option>
             <option value="IM">Instrumento Musical</option>
+            <option value="H">Hospedagem</option>
           </select>
         </div>
 
@@ -135,24 +136,11 @@
           />
         </div>
 
-        <!-- Confirmar Senha -->
-        <div>
-          <label for="confirm_password" class="block text-sm font-medium text-gray-700">
-            Confirmar Senha
-          </label>
-          <input
-            type="password"
-            id="confirm_password"
-            name="confirm_password"
-            required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          />
-        </div>
 
         <!-- Rodapé -->
         <p class="text-sm text-gray-500 text-center mt-6">
           Já tem conta?
-          <a href="/login" class="text-green-700 hover:underline"> Entrar </a>
+          <a href="/" class="text-green-700 hover:underline"> Entrar </a>
         </p>
 
         <!-- Botão -->
@@ -168,31 +156,36 @@
 </html>
 
 <script>
-  const campoCurso = document.getElementById('turma'); // Referenciando o select de curso
+  const campoCurso = document.getElementById('curso');
   const divSerie = document.getElementById('div_serie');
   const divTurma = document.getElementById('div_turma');
   const divMatricula = document.getElementById('div_matricula');
 
-  campoCurso.addEventListener('change', function() {
-    // Se o valor selecionado for 'PF' (Professor)
-    if (this.value === 'PF') {
-      divSerie.classList.add('hidden');
-      divTurma.classList.add('hidden');
-      divMatricula.classList.add('hidden');
-      
-      // Opcional: remover o 'required' para o formulário deixar enviar
-      divSerie.querySelector('select').required = false;
-      divTurma.querySelector('select').required = false;
-      divMatricula.querySelector('input').required = false;
-    } else {
-      // Se for qualquer outra coisa (aluno), mostra de novo
-      divSerie.classList.remove('hidden');
-      divTurma.classList.remove('hidden');
-      divMatricula.classList.remove('hidden');
-      
-      divSerie.querySelector('select').required = true;
-      divTurma.querySelector('select').required = true;
-      divMatricula.querySelector('input').required = true;
-    }
-  });
+  function gerenciarCampos() {
+    // Se não encontrar o campo do curso, interrompe a função para não dar erro
+    if (!campoCurso) return; 
+
+    const éProfessor = campoCurso.value === 'PF';
+
+    // Gerencia a visibilidade das divs de forma limpa (se for professor, esconde)
+    divSerie?.classList.toggle('hidden', éProfessor);
+    divTurma?.classList.toggle('hidden', éProfessor);
+    divMatricula?.classList.toggle('hidden', éProfessor);
+
+    // Seleciona os elementos internos de forma segura usando o operador '?.'
+    const selectSerie = divSerie?.querySelector('select');
+    const selectTurma = divTurma?.querySelector('select');
+    const inputMatricula = divMatricula?.querySelector('input');
+
+    // Se o elemento existir, define o 'required' (oposto de éProfessor)
+    if (selectSerie) selectSerie.required = !éProfessor;
+    if (selectTurma) selectTurma.required = !éProfessor;
+    if (inputMatricula) inputMatricula.required = !éProfessor;
+  }
+
+  // Escuta a mudança no select
+  campoCurso.addEventListener('change', gerenciarCampos);
+
+  // Executa uma vez ao carregar a página para alinhar o estado inicial
+  document.addEventListener('DOMContentLoaded', gerenciarCampos);
 </script>

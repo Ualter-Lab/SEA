@@ -1,4 +1,4 @@
-# SEA - Sistema Educacional de Atividades
+# SEA - Sistema de Envio de Atividades
 
 Sistema web desenvolvido em Flask para gerenciamento de atividades escolares, permitindo o cadastro de alunos, turmas e atividades em um ambiente simples e organizado.
 

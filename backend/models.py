@@ -1,8 +1,9 @@
 from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 from . import db
 
-class user(db.Model):
+class user(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)

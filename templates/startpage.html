@@ -8,19 +8,57 @@
   </head>
 
   <body class="bg-gray-100 min-h-screen">
-    
     <!-- Navbar -->
     <div class="bg-green-800 text-white p-4 flex justify-between">
       <h1 class="font-bold">SEA - IFAL</h1>
       <a href="/logout" class="hover:underline">Sair</a>
     </div>
 
+    {% if current_user.curso != "PF" %}
+    <!-- Área do Aluno -->
+    <div class="max-w-6xl mt-auto p-6 text-center">
+      <h2 class="text-2xl font-bold text-gray-800 text-start">Bem-vindo, {{current_user.username}}</h2>
+      <h3 class="text-start mb-6 text-gray-600">
+        Matricula: {{current_user.matricula}} | Turma: {{current_user.serie}}º {{current_user.turma}} | Curso: {{current_user.curso}}
+      </h3>
+
+      <div class="bg-white p-6 rounded-xl shadow mb-8 inline-block">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 text-start">
+          Notas por Bimestre
+        </h3>
+        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
+          <p>1º bimestre</p>
+          <p class="font-extrabold text-xl text-center">0</p>
+        </div>
+        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
+          <p>2º bimestre</p>
+          <p class="font-extrabold text-xl text-center">0</p>
+        </div>
+        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
+          <p>3º bimestre</p>
+          <p class="font-extrabold text-xl text-center">0</p>
+        </div>
+        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
+          <p>4º bimestre</p>
+          <p class="font-extrabold text-xl text-center">0</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow max-w-6xl mx-auto text-left">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Atividades</h3>
+          <p>
+            <a href="atividade.html" class="text-green-700 hover:underline"
+              >Ver todas as atividades</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <!--Dashboard do Professor-->
     <div class="max-w-6xl mx-auto p-6">
       <h2 class="text-2xl font-bold text-gray-800 mb-6">Suas Turmas</h2>
 
       <!-- Turmas -->
       <div class="grid md:grid-cols-3 gap-4 mb-8">
-
         <!-- Turma Card -->
         <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
           <h3 class="font-semibold text-gray-800">Professores</h3>
@@ -51,9 +89,7 @@
             Ver turma
           </a>
         </div>
-      </div>      
-
-      
+      </div>
 
       <!-- Criar atividade -->
       <div class="bg-white p-6 rounded-xl shadow">
@@ -109,7 +145,9 @@
 
       <!-- Atividades -->
       <div class="bg-white p-6 rounded-xl shadow mt-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Atividades Recentes</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">
+          Atividades Recentes
+        </h2>
 
         <div class="space-y-4">
           <!-- Atividade Card -->
@@ -127,4 +165,6 @@
         </div>
       </div>
     </div>
+    {% endif%}
+  </body>
 </html>

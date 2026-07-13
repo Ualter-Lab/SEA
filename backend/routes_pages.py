@@ -12,14 +12,19 @@ pages_bp = Blueprint('pages', __name__)
 def login():
     return render_template('login.html')
 
+@pages_bp.route('/dashboard')
+def dashboard():
+    return render_template('startpage.html')
+
+@pages_bp.route('/register')
+def register():
+    return render_template('register.html')
+
 
 @pages_bp.route('/login', methods=['POST'])
 def login_post():
     if current_user.is_authenticated:
-        if current_user.curso.strip().upper() == "PF":
-            return redirect(url_for('pages.dashboard'))
-        else:
-            return redirect(url_for('pages.index'))
+        return redirect(url_for('pages.dashboard'))
 
     username = request.form['username']
     password = request.form['password']
@@ -27,19 +32,17 @@ def login_post():
     usuario = user.query.filter_by(username=username).first()
 
     if not usuario:
-        return render_template('pages.login', error="Usuário não encontrado")
+        flash("Usuário não encontrado", "error")
+        return redirect(url_for('pages.login'))
 
     if not check_password_hash(usuario.password, password):
-        return render_template('pages.login', error="Senha incorreta")
+        flash("Senha incorreta", "error")
+        return redirect(url_for("pages.login"))
 
     login_user(usuario)
     flash("Bem-vindo!", "success")
 
-    if usuario.curso.strip().upper() == "PF":
-        return redirect(url_for('pages.dashboard'))
-    else:
-        return redirect(url_for('pages.index'))
-
+    return redirect(url_for('pages.dashboard'))
 
 @pages_bp.route('/logout')
 @login_required
@@ -47,24 +50,6 @@ def logout():
     logout_user()
     flash("Você saiu da sua conta.", "success")
     return redirect(url_for('pages.login'))
-
-
-@pages_bp.route('/register')
-def register():
-    return render_template('register.html')
-
-
-@pages_bp.route('/estudante')
-@login_required
-def index():
-    return render_template('estudante.html')
-
-
-@pages_bp.route('/dashboard')
-@login_required
-def dashboard():
-    return render_template('dashboard.html')
-
 
 @pages_bp.route('/cadastro', methods=['POST'])
 def cadastro():

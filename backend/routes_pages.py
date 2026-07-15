@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from . import db
-from .models import user
+from .models import user, turma
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -13,6 +13,7 @@ def login():
     return render_template('login.html')
 
 @pages_bp.route('/dashboard')
+@login_required
 def dashboard():
     return render_template('startpage.html')
 
@@ -77,12 +78,19 @@ def cadastro():
 
     password_hashed = generate_password_hash(password)
 
+    turma_ref = None
+    if serie and turma_valor:
+        turma_ref = turma.query.filter_by(curso=curso, serie=serie, nome=turma_valor).first()
+        if not turma_ref:
+            turma_ref = turma(curso=curso, serie=serie, nome=turma_valor)
+            db.session.add(turma_ref)
+            db.session.flush()
+
     new_user = user(
         name=nome,
         username=username,
         curso=curso,
-        serie=serie,
-        turma=turma_valor,
+        turma_id=turma_ref.id if turma_ref else None,
         matricula=matricula,
         password=password_hashed
     )

@@ -1,6 +1,6 @@
-from flask import Flask, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
+from flask import Flask, redirect, url_for # type: ignore
+from flask_sqlalchemy import SQLAlchemy # type: ignore
+from flask_login import UserMixin # type: ignore
 from . import db
 
 class user(db.Model, UserMixin):
@@ -11,6 +11,7 @@ class user(db.Model, UserMixin):
     turma_id = db.Column(db.Integer, db.ForeignKey("turma.id"))
     matricula = db.Column(db.String(80), unique=True)
     password = db.Column(db.String, nullable=False) 
+    is_teacher = db.Column(db.Boolean, default=False, nullable=False)
 
 class turma(db.Model):
     __tablename__ = 'turma'

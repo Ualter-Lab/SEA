@@ -1,12 +1,21 @@
-from flask import Blueprint, render_template, url_for, redirect, request, flash
-from flask_login import current_user, login_user, logout_user, login_required
+from flask import Blueprint, render_template, url_for, redirect, request, flash # type: ignore
+from flask_login import current_user, login_user, logout_user, login_required # type: ignore
 from . import db
 from .models import user, turma
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash # type: ignore
 
 
 pages_bp = Blueprint('pages', __name__)
 
+#Funções
+
+def check_teacher(rota1, rota2, TrueOrFalse):
+    if current_user.is_teacher == TrueOrFalse:
+        return rota1
+    else:
+        return rota2
+
+#Rotas dos templates
 
 @pages_bp.route('/')
 def login():
@@ -21,6 +30,22 @@ def dashboard():
 def register():
     return render_template('register.html')
 
+@pages_bp.route('/turmas')
+@login_required
+def turma():
+    check_teacher(render_template('turma.html'), url_for('/dashboard'), True)
+
+@pages_bp.route('/aluno')
+@login_required
+def aluno():
+    check_teacher(render_template('aluno.html'), url_for('/dashboard'), True)
+
+@pages_bp.route('/atividades')
+@login_required
+def atividades():
+    check_teacher(render_template('atividade.html'), url_for('/dashboard'), True)
+    
+#Rotas post / Rotas de ações
 
 @pages_bp.route('/login', methods=['POST'])
 def login_post():

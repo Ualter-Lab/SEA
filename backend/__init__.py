@@ -1,11 +1,12 @@
 import os
-from flask import Flask
-from flask_login import LoginManager
+from flask import Flask, url_for # type: ignore
+from flask_login import LoginManager # type: ignore
 from dotenv import load_dotenv
 import flask_sqlalchemy #type: ignore
 
 db = flask_sqlalchemy.SQLAlchemy()
 login_manager = LoginManager()
+login_manager.login_view = "url_for('/')"
 
 def create_app():
     load_dotenv()

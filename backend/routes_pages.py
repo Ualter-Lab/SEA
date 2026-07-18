@@ -19,16 +19,16 @@ def check_teacher(rota1, rota2, TrueOrFalse):
 
 @pages_bp.route('/')
 def login():
-    return render_template('login.html')
+    return render_template('login.html', modo="login")
 
 @pages_bp.route('/dashboard')
 @login_required
 def dashboard():
     return render_template('startpage.html')
 
-@pages_bp.route('/register')
-def register():
-    return render_template('register.html')
+@pages_bp.route('/cadastro')
+def cadastro():
+    return render_template('login.html', modo="cadastro")
 
 @pages_bp.route('/turmas')
 @login_required
@@ -44,7 +44,7 @@ def aluno():
 @login_required
 def atividades():
     check_teacher(render_template('atividade.html'), url_for('/dashboard'), True)
-    
+
 #Rotas post / Rotas de ações
 
 @pages_bp.route('/login', methods=['POST'])
@@ -77,8 +77,8 @@ def logout():
     flash("Você saiu da sua conta.", "success")
     return redirect(url_for('pages.login'))
 
-@pages_bp.route('/cadastro', methods=['POST'])
-def cadastro():
+@pages_bp.route('/register', methods=['POST'])
+def register():
     nome = request.form['name']
     username = request.form['username']
     curso = request.form['curso']
@@ -90,7 +90,7 @@ def cadastro():
     usuario_existente = user.query.filter_by(username=username).first()
 
     if usuario_existente:
-        return render_template('register.html', error="Esse usuário já existe")
+        return render_template('pages.login', error="Esse usuário já existe")
 
     if not serie or serie.strip() == '':
         serie = None

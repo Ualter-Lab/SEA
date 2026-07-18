@@ -33,17 +33,24 @@ def cadastro():
 @pages_bp.route('/turmas')
 @login_required
 def turma():
-    check_teacher(render_template('turma.html'), url_for('/dashboard'), True)
+    check_teacher(render_template('subpage.html', modo="turma"), url_for('/dashboard'), True)
 
 @pages_bp.route('/aluno')
 @login_required
 def aluno():
-    check_teacher(render_template('aluno.html'), url_for('/dashboard'), True)
+    check_teacher(render_template('subpage.html', modo="perfilaluno"), url_for('/dashboard'), True)
+
+@pages_bp.route('/professores')
+@login_required
+def perfilprofessores():
+    check_teacher(render_template('subpage.html', modo="listaprofessores"), url_for('/dashboard'), True)
 
 @pages_bp.route('/atividades')
 @login_required
 def atividades():
-    check_teacher(render_template('atividade.html'), url_for('/dashboard'), True)
+    check_teacher(render_template('atividade.html', modo="atividades"), url_for('/dashboard'), False)
+
+
 
 #Rotas post / Rotas de ações
 

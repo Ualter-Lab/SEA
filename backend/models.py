@@ -16,9 +16,9 @@ class user(db.Model, UserMixin):
 class turma(db.Model):
     __tablename__ = 'turma'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(1), nullable=False)
     curso = db.Column(db.String(80), nullable=False)
-    serie = db.Column(db.String(80), nullable=False)
+    serie = db.Column(db.Integer, nullable=False)
 
 class materia(db.Model):
     __tablename__ = 'materia'
@@ -35,9 +35,9 @@ class atividade(db.Model):
 
 class notas(db.Model):
     __tablename__ = 'notas'
-    id = db.Column(db.Interger, primary_key=True)
-    id_aluno = db.Column(db.Interger, db.ForeingKey("user.id"), nullable=False )
-    id_materia = db.Column(db.Interger, db.ForeingKey("materia.id"), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    id_aluno = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False )
+    id_materia = db.Column(db.Integer, db.ForeignKey("materia.id"), nullable=False)
     b1 = db.Column(db.Float)
     b2 = db.Column(db.Float)
     b3 = db.Column(db.Float)

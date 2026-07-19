@@ -24,7 +24,24 @@ def login():
 @pages_bp.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('startpage.html')
+
+    if not current_user.is_teacher:
+      turma_user_id = current_user.turma_id
+      turma_user = turma.query.get(turma_user_id)
+      
+      serie = turma_user.serie
+      curso = turma_user.curso
+      name_turma = turma_user.name
+    else:
+        serie = None
+        curso = None
+        name_turma = None
+
+    return render_template('startpage.html',
+                           serie = serie,
+                           curso = curso,
+                           name_turma = name_turma
+                           )
 
 @pages_bp.route('/cadastro')
 def cadastro():
@@ -32,7 +49,7 @@ def cadastro():
 
 @pages_bp.route('/turmas')
 @login_required
-def turma():
+def turma_page():
     check_teacher(render_template('subpage.html', modo="turma"), url_for('/dashboard'), True)
 
 @pages_bp.route('/aluno')
@@ -86,7 +103,7 @@ def logout():
 
 @pages_bp.route('/register', methods=['POST'])
 def register():
-    nome = request.form['name']
+    name = request.form['name']
     username = request.form['username']
     curso = request.form['curso']
     serie = request.form.get('serie')
@@ -97,7 +114,7 @@ def register():
     usuario_existente = user.query.filter_by(username=username).first()
 
     if usuario_existente:
-        return render_template('pages.login', error="Esse usuário já existe")
+        return url_for('pages.login', error="Esse usuário já existe")
 
     if not serie or serie.strip() == '':
         serie = None
@@ -112,16 +129,15 @@ def register():
 
     turma_ref = None
     if serie and turma_valor:
-        turma_ref = turma.query.filter_by(curso=curso, serie=serie, nome=turma_valor).first()
+        turma_ref = turma.query.filter_by(curso=curso, serie=serie, name=turma_valor).first()
         if not turma_ref:
-            turma_ref = turma(curso=curso, serie=serie, nome=turma_valor)
+            turma_ref = turma(curso=curso, serie=serie, name=turma_valor)
             db.session.add(turma_ref)
             db.session.flush()
 
     new_user = user(
-        name=nome,
+        name=name,
         username=username,
-        curso=curso,
         turma_id=turma_ref.id if turma_ref else None,
         matricula=matricula,
         password=password_hashed

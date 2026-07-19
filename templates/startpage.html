@@ -14,12 +14,12 @@
       <a href="/logout" class="hover:underline">Sair</a>
     </div>
 
-    {% if current_user.curso != "PF" %}
+    {% if current_user.is_teacher == false %}
     <!-- Área do Aluno -->
     <div class="max-w-6xl mt-auto p-6 text-center">
       <h2 class="text-2xl font-bold text-gray-800 text-start">Bem-vindo, {{current_user.username}}</h2>
       <h3 class="text-start mb-6 text-gray-600">
-        Matricula: {{current_user.matricula}} | Turma: {{current_user.serie}}º {{current_user.turma}} | Curso: {{current_user.curso}}
+        Matricula: {{current_user.matricula}} | Turma: {{ serie }}º {{ name_turma }} | Curso: {{ curso }}
       </h3>
 
       <div class="bg-white p-6 rounded-xl shadow mb-8 inline-block">

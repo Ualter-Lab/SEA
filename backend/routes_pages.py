@@ -70,7 +70,11 @@ def atividades():
 @pages_bp.route('/materias')
 @login_required
 def materias():
-    return check_teacher(render_template('subpage.html', modo="materias"), url_for('pages.dashboard'), False)
+    materia_ids = db.session.query(notas.id_materia). filter_by(id_user = current_user.id).distinct().all()
+    materia_ids = [m[0] for m in materia_ids]
+    materias = materia.query.filter(materia.id.in_(materia_ids)).all()
+
+    return check_teacher(render_template('subpage.html', modo="materias", materias=materias), url_for('pages.dashboard'), False)
 
 @pages_bp.route('/submateria')
 @login_required
@@ -177,10 +181,10 @@ def criar_materia():
 def entrar_materia():
     id_materia = request.form['id_materia']
 
-    matricula_user = current_user.matricula
+    user_id= current_user.id
 
     new_nota = notas(
-        numero_matricula = matricula_user,
+        id_user = user_id,
         id_materia = id_materia,
         b1 = None,
         b2 = None,
@@ -192,4 +196,15 @@ def entrar_materia():
     db.session.commit()
 
     flash("Matéria entrada com sucesso!", "sucesso")
-    return redirect(url_for('pages.dashboard'))
+    return redirect(url_for('pages.materias'))
+
+@pages_bp.route('/logout_materia/<int:id>')
+@login_required
+def logout_materia(id):
+    nota = notas.query.filter_by(id_user = current_user.id, id_materia = id).first()
+
+    if nota:
+        db.session.delete(nota)
+        db.session.commit()
+    
+    return redirect(url_for('pages.materias'))

@@ -36,7 +36,7 @@ class atividade(db.Model):
 class notas(db.Model):
     __tablename__ = 'notas'
     id = db.Column(db.Integer, primary_key=True)
-    numero_matricula = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False )
+    id_user = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False )
     id_materia = db.Column(db.Integer, db.ForeignKey("materia.id"), nullable=False)
     b1 = db.Column(db.Float)
     b2 = db.Column(db.Float)

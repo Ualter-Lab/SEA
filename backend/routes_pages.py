@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash # type: ignore
 from flask_login import current_user, login_user, logout_user, login_required # type: ignore
 from . import db
-from .models import user, turma
+from .models import user, turma, materia, notas
 from werkzeug.security import generate_password_hash, check_password_hash # type: ignore
 
 
@@ -50,24 +50,32 @@ def cadastro():
 @pages_bp.route('/turmas')
 @login_required
 def turma_page():
-    check_teacher(render_template('subpage.html', modo="turma"), url_for('/dashboard'), True)
+    return check_teacher(render_template('subpage.html', modo="turma"), url_for('pages.dashboard'), True)
 
 @pages_bp.route('/aluno')
 @login_required
 def aluno():
-    check_teacher(render_template('subpage.html', modo="perfilaluno"), url_for('/dashboard'), True)
+    return check_teacher(render_template('subpage.html', modo="perfilaluno"), url_for('/dashboard'), True)
 
 @pages_bp.route('/professores')
 @login_required
 def perfilprofessores():
-    check_teacher(render_template('subpage.html', modo="listaprofessores"), url_for('/dashboard'), True)
+    return check_teacher(render_template('subpage.html', modo="listaprofessores"), url_for('/dashboard'), True)
 
 @pages_bp.route('/atividades')
 @login_required
 def atividades():
-    check_teacher(render_template('atividade.html', modo="atividades"), url_for('/dashboard'), False)
+    return check_teacher(render_template('atividade.html', modo="atividades"), url_for('/dashboard'), False)
 
+@pages_bp.route('/materias')
+@login_required
+def materias():
+    return check_teacher(render_template('subpage.html', modo="materias"), url_for('pages.dashboard'), False)
 
+@pages_bp.route('/submateria')
+@login_required
+def submateria():
+    return check_teacher(render_template('subpage.html', modo="submateria"), url_for('pages.dashboard'), False)
 
 #Rotas post / Rotas de ações
 
@@ -148,3 +156,40 @@ def register():
 
     flash("Cadastro realizado com sucesso!", "success")
     return redirect(url_for('pages.login'))
+
+@pages_bp.route('/criar-matéria', methods=['POST'])
+@login_required
+def criar_materia():
+    materia_name = request.form['materia']
+
+    new_materia = materia(
+        materia_name = materia_name
+    )
+
+    db.session.add(new_materia)
+    db.session.commit()
+
+    flash("Matéria registrada com sucesso!", "sucesso")
+    return redirect(url_for('pages.dashboard'))
+
+@pages_bp.route('/entrar_matéria', methods=['POST'])
+@login_required
+def entrar_materia():
+    id_materia = request.form['id_materia']
+
+    matricula_user = current_user.matricula
+
+    new_nota = notas(
+        numero_matricula = matricula_user,
+        id_materia = id_materia,
+        b1 = None,
+        b2 = None,
+        b3 = None,
+        b4 = None
+    )
+
+    db.session.add(new_nota)
+    db.session.commit()
+
+    flash("Matéria entrada com sucesso!", "sucesso")
+    return redirect(url_for('pages.dashboard'))

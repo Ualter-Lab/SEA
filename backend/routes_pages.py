@@ -27,7 +27,7 @@ def dashboard():
 
     if not current_user.is_teacher:
       turma_user_id = current_user.turma_id
-      turma_user = turma.query.get(turma_user_id)
+      turma_user = turma.query.get_or_404(turma_user_id)
       
       serie = turma_user.serie
       curso = turma_user.curso

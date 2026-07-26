@@ -1,6 +1,6 @@
 # SEA - Sistema de Envio de Atividades
 
-Sistema web desenvolvido em Flask para gerenciamento de atividades escolares, permitindo o cadastro de alunos, turmas e atividades em um ambiente simples e organizado.
+Sistema web desenvolvido em Flask para gerenciamento acadêmico, permitindo o cadastro de alunos e professores, organização de turmas e matérias, lançamento de notas por bimestre e acompanhamento de atividades.
 
 ## 📚 Sobre o Projeto
 
@@ -8,23 +8,23 @@ O SEA (Sistema de Envio de Atividades) foi criado para auxiliar instituições d
 
 A plataforma permite:
 
-- Cadastro de usuários
-- Cadastro de alunos
-- Gerenciamento de turmas
-- Criação de atividades
-- Login de usuários
-- Painel para estudantes
-- Organização das atividades por turma
+- Cadastro e login de usuários (alunos e professores)
+- Organização de alunos por turma, curso e série
+- Matrícula do aluno em matérias
+- Lançamento e acompanhamento de notas por bimestre (B1 a B4)
+- Dashboard do aluno com médias calculadas automaticamente
+- Painel de atividades
 
 ## 🛠️ Tecnologias Utilizadas
 
 - Python 3
 - Flask
 - Flask-SQLAlchemy
+- Flask-Login (autenticação e sessão)
+- Werkzeug Security (hash de senhas)
 - SQLite / PostgreSQL (via SQLAlchemy)
-- HTML5
-- Tailwind CSS
 - Jinja2
+- Tailwind CSS (via CDN)
 
 ## 📁 Estrutura do Projeto
 
@@ -32,196 +32,105 @@ A plataforma permite:
 SEA/
 │
 ├── backend/
-│   ├── __init__.py
-│   ├── models.py
-│   └── routes_pages.py
+│   ├── __init__.py        # Factory da aplicação (create_app)
+│   ├── models.py          # Modelos: user, turma, materia, atividade, notas
+│   ├── routes_pages.py    # Rotas de páginas e ações (login, cadastro, notas...)
+│   └── static/
+│       └── script.js
 │
 ├── templates/
-│   ├── login.html
-│   ├── register.html
-│   ├── estudante.html
-│   ├── dashboard.html
-│   ├── turma.html
-│   ├── atividade.html
-│   ├── professores.html
-│   └── perfilaluno.html
+│   ├── login.html         # Login e cadastro (modo="login" | "cadastro")
+│   ├── startpage.html     # Dashboard (aluno e professor)
+│   └── subpage.html       # Turmas, perfil do aluno, professores, matérias...
 │
 ├── run.py
 ├── requirements.txt
+├── tailwind.config.js
 └── README.md
 ```
 
 ## 🗄️ Banco de Dados
 
-### Usuário
+### user
+
+| Campo | Tipo | Observações |
+|---|---|---|
+| id | Integer | Chave primária |
+| name | String | |
+| username | String | Único |
+| turma_id | Integer | FK → `turma.id` |
+| matricula | Integer | Único |
+| password | String | Hash gerado com `werkzeug.security` |
+| is_teacher | Boolean | Define se o usuário é professor |
+
+### turma
+
+| Campo | Tipo | Observações |
+|---|---|---|
+| id | Integer | Chave primária |
+| name | String(1) | Identificador da turma (ex.: "A") |
+| curso | String | |
+| serie | Integer | |
+
+### materia
 
 | Campo | Tipo |
-|---------|---------|
+|---|---|
 | id | Integer |
-| name | String |
-| username | String |
-| curso | String |
-| serie | String |
-| turma | String |
-| matricula | String |
-| password | String |
+| materia_name | String |
 
-### Turma
+### atividade
 
-| Campo | Tipo |
-|---------|---------|
-| id | Integer |
-| curso | String |
-| serie | String |
+| Campo | Tipo | Observações |
+|---|---|---|
+| id | Integer | Chave primária |
+| name | String | |
+| descricao | String | |
+| data_fim | Date | |
+| turma_id | Integer | FK → `turma.id` |
 
-### Atividade
+### notas
 
-| Campo | Tipo |
-|---------|---------|
-| id | Integer |
-| nome | String |
-| descricao | String |
-| data_fim | Date |
-| turma_id | Foreign Key |
+| Campo | Tipo | Observações |
+|---|---|---|
+| id | Integer | Chave primária |
+| id_user | Integer | FK → `user.id` |
+| id_materia | Integer | FK → `materia.id` |
+| b1, b2, b3, b4 | Float | Notas por bimestre |
+
+## 🌐 Rotas Principais
+
+| Rota | Método | Descrição |
+|---|---|---|
+| `/` | GET | Página de login |
+| `/cadastro` | GET | Página de cadastro |
+| `/login` | POST | Autentica o usuário |
+| `/register` | POST | Cria um novo usuário |
+| `/logout` | GET | Encerra a sessão |
+| `/dashboard` | GET | Painel do aluno (com médias por bimestre) ou do professor |
+| `/turmas` | GET | Listagem de turmas (professor) |
+| `/aluno` | GET | Perfil do aluno |
+| `/professores` | GET | Listagem de professores |
+| `/materias` | GET | Matérias em que o aluno está matriculado |
+| `/entrar_matéria` | POST | Matricula o aluno em uma matéria |
+| `/logout_materia/<id>` | GET | Remove a matrícula do aluno em uma matéria |
+| `/criar-matéria` | POST | Cria uma nova matéria |
+| `/atividades` | GET | Painel de atividades |
 
 ## ⚙️ Instalação
 
-## 🐘 Configurando o PostgreSQL
-
-### 1. Instale o PostgreSQL
-
-Baixe e instale o PostgreSQL:
-
- [oai_citation:0‡postgresql.org](https://www.postgresql.org/download/)
-
-Durante a instalação, defina uma senha para o usuário `postgres`.
-
----
-
-### 2. Criar o Banco de Dados
-
-Abra o terminal do PostgreSQL (psql) e execute:
-
-```sql
-CREATE DATABASE sea;
-```
-
-Verifique se o banco foi criado:
-
-```sql
-\l
-```
-
----
-
-### 3. Configurar a Conexão
-
-Crie um arquivo `.env` na raiz do projeto:
-
-```env
-KEY=sua_chave_secreta
-
-DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/sea
-```
-
-Exemplo:
-
-```env
-DATABASE_URL=postgresql://postgres:123456@localhost:5432/sea
-```
-
----
-
-### 4. Instalar Dependências
-
-Além das dependências do projeto, instale o driver do PostgreSQL:
-
-```bash
-pip install psycopg2-binary
-```
-
-Ou:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-### 5. Criar as Tabelas
-
-Com o banco configurado, execute:
-
-```bash
-python run.py
-```
-
-O SQLAlchemy criará automaticamente as tabelas:
-
-- user
-- turma
-- atividade
-
----
-
-### Estrutura das Tabelas
-
-#### user
-
-```sql
-CREATE TABLE "user" (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(80) NOT NULL,
-    username VARCHAR(80) UNIQUE NOT NULL,
-    curso VARCHAR(80) NOT NULL,
-    serie VARCHAR(80),
-    turma VARCHAR(80),
-    matricula VARCHAR(80) UNIQUE,
-    password TEXT NOT NULL
-);
-```
-
-#### turma
-
-```sql
-CREATE TABLE turma (
-    id SERIAL PRIMARY KEY,
-    curso VARCHAR(80) NOT NULL,
-    serie VARCHAR(80) NOT NULL
-);
-```
-
-#### atividade
-
-```sql
-CREATE TABLE atividade (
-    id SERIAL PRIMARY KEY,
-    nome VARCHAR(80) NOT NULL,
-    descricao VARCHAR(200) NOT NULL,
-    data_fim DATE NOT NULL,
-    turma_id INTEGER NOT NULL REFERENCES turma(id)
-);
-```
-
-### 6. Clone o repositório
+### 1. Clone o repositório
 
 ```bash
 git clone https://github.com/Ualter-Lab/SEA.git
-```
-
-### 7. Entre na pasta do projeto
-
-```bash
 cd SEA
 ```
 
-### 8. Crie um ambiente virtual
+### 2. Crie e ative um ambiente virtual
 
 ```bash
 python -m venv venv
 ```
-
-### 9. Ative o ambiente virtual
 
 Windows:
 
@@ -235,13 +144,13 @@ Linux/Mac:
 source venv/bin/activate
 ```
 
-### 10. Instale as dependências
+### 3. Instale as dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 11. Configure o arquivo `.env`
+### 4. Configure o arquivo `.env`
 
 Crie um arquivo `.env` na raiz do projeto:
 
@@ -250,30 +159,67 @@ KEY=sua_chave_secreta
 DATABASE_URL=sqlite:///sea.db
 ```
 
-## ▶️ Executando o Projeto
+Isso já é suficiente para rodar com SQLite. Para usar PostgreSQL, veja a seção abaixo.
+
+### 5. Execute o projeto
 
 ```bash
 python run.py
 ```
 
+O SQLAlchemy criará automaticamente as tabelas (`user`, `turma`, `materia`, `atividade`, `notas`) na primeira execução.
+
 O sistema ficará disponível em:
 
 ```text
-http://localhost:5001
+http://localhost:5234
 ```
+
+## 🐘 Usando PostgreSQL (opcional)
+
+### 1. Instale o PostgreSQL
+
+Baixe e instale em [postgresql.org](https://www.postgresql.org/download/). Durante a instalação, defina uma senha para o usuário `postgres`.
+
+### 2. Crie o banco de dados
+
+No terminal do PostgreSQL (`psql`):
+
+```sql
+CREATE DATABASE sea;
+```
+
+### 3. Configure a conexão no `.env`
+
+```env
+KEY=sua_chave_secreta
+DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/sea
+```
+
+Exemplo:
+
+```env
+DATABASE_URL=postgresql://postgres:123456@localhost:5432/sea
+```
+
+### 4. Rode o projeto normalmente
+
+```bash
+python run.py
+```
+
+O SQLAlchemy cria as tabelas automaticamente ao subir a aplicação.
 
 ## 🚀 Funcionalidades Futuras
 
 - Recuperação de senha
 - Upload de arquivos nas atividades
-- Dashboard com estatísticas
-- Sistema de notas
-- Área exclusiva para professores
+- Dashboard com estatísticas mais completas
+- Área exclusiva para lançamento de notas pelo professor
 - Controle de entrega de atividades
 
 ## 👨‍💻 Autor
 
 Desenvolvido por Walter Neto.
 
-GitHub:
-https://github.com/Ualter-Lab
+GitHub: [Ualter-Lab](https://github.com/Ualter-Lab)

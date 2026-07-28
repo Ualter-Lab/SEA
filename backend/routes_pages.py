@@ -93,12 +93,14 @@ def aluno():
 
 @pages_bp.route("/professores")
 @login_required
-def perfilprofessores():
-    return check_teacher(
-        render_template("subpage.html", modo="listaprofessores"),
-        url_for("/dashboard"),
-        True,
-    )
+def listadeprofessores():
+    if not current_user.is_teacher:
+        return redirect(url_for("pages.dashboard"))
+
+    professores_array = user.query.filter_by(turma_id=None, matricula=None).all()
+
+    return render_template("subpage.html", modo="listaprofessores", professores_array = professores_array)
+
 
 
 @pages_bp.route("/atividades")
@@ -268,3 +270,14 @@ def logout_materia(id):
         db.session.commit()
 
     return redirect(url_for("pages.materias"))
+
+@pages_bp.route("/p_confirmar/<int:teacher_id>")
+@login_required
+def confirmar_professor(teacher_id):
+    user_teacher = user.query.get(teacher_id)
+
+    if user_teacher:
+        user_teacher.is_teacher = True
+        db.session.commit()
+
+    return redirect(url_for("pages.listadeprofessores"))

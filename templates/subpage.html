@@ -249,27 +249,16 @@
           Professores
         </h3>
         <ul class="text-gray-700">
+          {% for p in professores_array %}
           <li class="px-3 py-2 odd:bg-gray-200">
-            <div class="font-medium">ANTHONY ALEXANDRE DOS SANTOS SILVA</div>
+            <div class="font-medium">{{ p.name }}</div>
+            <div class="font-light">{{ p.is_teacher }}</div>
             <div class="text-sm text-gray-500 mt-1">
-              <a href="dashboard.html" class="text-red-900">Excluir</a> |
-              <a href="dashboard.html" class="text-green-900">Confirmar</a>
+              <a href="/p_excluir/{{ p.id }}" class="text-red-900">Excluir</a> |
+              <a href="/p_confirmar/{{ p.id }}" class="text-green-900">Confirmar</a>
             </div>
           </li>
-          <li class="px-3 py-2 odd:bg-gray-200">
-            <div class="font-medium">ANTHONY ALEXANDRE DOS SANTOS SILVA</div>
-            <div class="text-sm text-gray-500 mt-1">
-              <a href="dashboard.html" class="text-red-900">Excluir</a> |
-              <a href="dashboard.html" class="text-green-900">Confirmar</a>
-            </div>
-          </li>
-          <li class="px-3 py-2 odd:bg-gray-200">
-            <div class="font-medium">ANTHONY ALEXANDRE DOS SANTOS SILVA</div>
-            <div class="text-sm text-gray-500 mt-1">
-              <a href="dashboard.html" class="text-red-900">Excluir</a> |
-              <a href="dashboard.html" class="text-green-900">Confirmar</a>
-            </div>
-          </li>
+          {% endfor %}
         </ul>
       </div>
     </div>

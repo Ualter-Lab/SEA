@@ -14,6 +14,7 @@
     </div>
 
     {% if modo == "perfilaluno" %}
+
     <div class="max-w-4xl mx-auto p-6">
       <h2 class="text-2xl font-bold text-gray-800 mb-6">Perfil do Aluno</h2>
 
@@ -138,11 +139,13 @@
         </div>
       </div>
     </div>
+
     {% elif modo == "turma" %}
+
     <div class="max-w-4xl mx-auto p-6">
-      <h2 class="text-2xl font-bold text-gray-800 text-start">Turma: 1º A</h2>
+      <h2 class="text-2xl font-bold text-gray-800 text-start">Turma: {{ turma_info.serie }}º {{ turma_info.nome }}</h2>
       <h3 class="text-start mb-6 text-gray-600">
-        Curso: Engenharia de Software
+        Curso: {{ turma_info.curso }}
       </h3>
 
       <div class="bg-white p-6 rounded-xl shadow mb-8 inline-block w-full">
@@ -150,31 +153,21 @@
           Estudantes
         </h3>
         <ul class="text-gray-700">
+          {% for u in users_classroom %}
           <li class="px-3 py-2 odd:bg-gray-200">
-            <div class="font-medium">ANTHONY ALEXANDRE DOS SANTOS SILVA</div>
+            <div class="font-medium">{{ u.name }}</div>
             <div class="text-sm text-gray-500 mt-1">
-              Matrícula: 2026301020 |
-              <a href="aluno.html" class="text-green-900">Ver Mais</a>
+              Matrícula: {{ u.matricula }} |
+              <a href="/aluno/{{ u.id }}" class="text-green-900">Ver Mais</a>
             </div>
           </li>
-          <li class="px-3 py-2 odd:bg-gray-200">
-            <div class="font-medium">FRANCISCO ANTÔNIO CARDOSO MONTEIRO</div>
-            <div class="text-sm text-gray-500 mt-1">
-              Matrícula: 2026301021 |
-              <a href="aluno.html" class="text-green-900">Ver Mais</a>
-            </div>
-          </li>
-          <li class="px-3 py-2 odd:bg-gray-200">
-            <div class="font-medium">WALTER AVELINO DE ALCÂNTARA NETO</div>
-            <div class="text-sm text-gray-500 mt-1">
-              Matrícula: 2026301022 |
-              <a href="aluno.html" class="text-green-900">Ver Mais</a>
-            </div>
-          </li>
+          {% endfor %}
         </ul>
       </div>
     </div>
+
     {% elif modo == "atividades" %}
+
     <div class="max-w-4xl mx-auto p-6">
       <h2 class="text-2xl font-bold text-gray-800 mb-6">
         Atividades Disponíveis
@@ -236,7 +229,9 @@
         </div>
       </div>
     </div>
+
     {% elif modo == "listaprofessores" %}
+
     <div class="max-w-4xl mx-auto p-6">
       <div>
         <h2 class="text-2xl font-bold text-gray-800 text-start">Professor</h2>
@@ -262,6 +257,7 @@
         </ul>
       </div>
     </div>
+
     {% elif modo == "materias" %}
 
     <div class="max-w-4xl mx-auto p-6">

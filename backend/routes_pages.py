@@ -28,8 +28,11 @@ def login():
 @login_required
 def dashboard():
     if current_user.is_teacher:
+        turmas = turma.query.all()
+
         return render_template(
             "startpage.html",
+            turmas=turmas,
             serie=None,
             curso=None,
             name_turma=None,
@@ -75,17 +78,9 @@ def cadastro():
     return render_template("login.html", modo="cadastro")
 
 
-@pages_bp.route("/turmas")
+@pages_bp.route("/aluno/<int:student_id>")
 @login_required
-def turma_page():
-    return check_teacher(
-        render_template("subpage.html", modo="turma"), url_for("pages.dashboard"), True
-    )
-
-
-@pages_bp.route("/aluno")
-@login_required
-def aluno():
+def aluno(student_id):
     return check_teacher(
         render_template("subpage.html", modo="perfilaluno"), url_for("/dashboard"), True
     )
@@ -141,7 +136,16 @@ def submateria():
         False,
     )
 
+@pages_bp.route("/turma/<int:classroom_id>")
+@login_required
+def turma_list(classroom_id):
+    users_classroom = user.query.filter_by(turma_id=classroom_id).all()
+    turma_info = turma.query.get(classroom_id)
 
+    return check_teacher(
+        render_template("subpage.html", modo="turma", users_classroom=users_classroom, turma_info=turma_info), url_for("pages.dashboard"), True
+    )
+    
 # Rotas post / Rotas de ações
 
 
@@ -260,10 +264,10 @@ def entrar_materia():
     return redirect(url_for("pages.materias"))
 
 
-@pages_bp.route("/logout_materia/<int:id>")
+@pages_bp.route("/logout_materia/<int:materia_id>")
 @login_required
-def logout_materia(id):
-    nota = notas.query.filter_by(id_user=current_user.id, id_materia=id).first()
+def logout_materia(materia_id):
+    nota = notas.query.filter_by(id_user=current_user.id, id_materia=materia_id).first()
 
     if nota:
         db.session.delete(nota)
@@ -281,3 +285,4 @@ def confirmar_professor(teacher_id):
         db.session.commit()
 
     return redirect(url_for("pages.listadeprofessores"))
+

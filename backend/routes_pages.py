@@ -69,7 +69,7 @@ def dashboard():
         media_b1=mb1,
         media_b2=mb2,
         media_b3=mb3,
-        media_b4=mb4,
+        media_b4=mb4
     )
 
 
@@ -81,8 +81,46 @@ def cadastro():
 @pages_bp.route("/aluno/<int:student_id>")
 @login_required
 def aluno(student_id):
+    # Procura do estudante
+    student_url_id = user.query.get(student_id)
+
+
+    # Procura dos dados do aluno
+    name = student_url_id.name
+    matricula = student_url_id.matricula
+
+    classroom_student = turma.query.get(student_url_id.turma_id)
+    serie = classroom_student.serie
+    turma_name = classroom_student.name
+    curso = classroom_student.curso
+
+    # Atividades
+
+    # Desempenho por Bimestre
+    array_notas = notas.query.filter_by(id_user=student_id).all()
+
+    def media(valores):
+        array_bi = [v for v in valores if v is not None]
+        return sum(array_bi) / len(array_bi) if array_bi else 0
+
+    mb1 = media([n.b1 for n in array_notas])
+    mb2 = media([n.b2 for n in array_notas])
+    mb3 = media([n.b3 for n in array_notas])
+    mb4 = media([n.b4 for n in array_notas])
+
     return check_teacher(
-        render_template("subpage.html", modo="perfilaluno"), url_for("/dashboard"), True
+        render_template("subpage.html", 
+                        modo="perfilaluno", 
+                        name=name, 
+                        matricula=matricula, 
+                        serie=serie, 
+                        turma_name=turma_name, 
+                        curso=curso,
+                        mb1=mb1,
+                        mb2=mb2,
+                        mb3=mb3,
+                        mb4=mb4
+                        ), url_for("pages.dashboard"), True
     )
 
 
@@ -103,7 +141,7 @@ def listadeprofessores():
 def atividades():
     return check_teacher(
         render_template("atividade.html", modo="atividades"),
-        url_for("/dashboard"),
+        url_for("pages.dashboard"),
         False,
     )
 

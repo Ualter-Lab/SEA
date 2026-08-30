@@ -130,7 +130,7 @@ def listadeprofessores():
     if not current_user.is_teacher:
         return redirect(url_for("pages.dashboard"))
 
-    professores_array = user.query.filter_by(turma_id=None, matricula=None).all()
+    professores_array = user.query.filter_by(turma_id=None, matricula=None, is_teacher=False).all()
 
     return render_template("subpage.html", modo="listaprofessores", professores_array = professores_array)
 

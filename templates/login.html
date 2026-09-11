@@ -5,6 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SEA - IFAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
+  
+<style>
+  :root {
+    --sea-green: #166534;
+    --sea-green-hover: #15803d;
+    --sea-bg: #f3f4f6;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(22,101,52,.06), transparent 28%),
+      radial-gradient(circle at 90% 10%, rgba(22,101,52,.045), transparent 25%),
+      var(--sea-bg);
+    color: #1f2937;
+  }
+
+  body > div:first-of-type {
+    z-index: 50;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    backdrop-filter: blur(8px);
+  }
+
+  a { transition: all .18s ease; }
+
+  input, select, textarea {
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    transform: translateY(-1px);
+  }
+
+  button {
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+  }
+
+  button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 18px rgba(22,101,52,.16);
+  }
+
+  button:active { transform: translateY(0); }
+
+  @media (max-width: 640px) {
+    body { overflow-x: hidden; }
+
+    body > div:first-of-type {
+      padding: .85rem 1rem;
+    }
+
+    body > div:first-of-type h1 {
+      font-size: .98rem;
+    }
+
+    body > div:first-of-type a {
+      font-size: .9rem;
+    }
+
+    .max-w-6xl, .max-w-4xl {
+      width: 100%;
+      max-width: none;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    h2 { line-height: 1.2; }
+
+    input, select, textarea, button {
+      min-height: 44px;
+    }
+  }
+</style>
+
+<style>
+  body {
+    padding: 5.5rem 1rem 2rem;
+  }
+
+  body > div:first-of-type {
+    position: fixed;
+  }
+
+  body > div:not(:first-of-type) {
+    border: 1px solid rgba(229,231,235,.9);
+    box-shadow: 0 20px 55px rgba(17,24,39,.10);
+    transition: box-shadow .2s ease, transform .2s ease;
+  }
+
+  body > div:not(:first-of-type):hover {
+    box-shadow: 0 24px 65px rgba(17,24,39,.13);
+  }
+
+  body > div:not(:first-of-type) h1 {
+    letter-spacing: -.025em;
+  }
+
+  form label {
+    margin-bottom: .35rem;
+  }
+
+  form input, form select {
+    min-height: 46px;
+    background: #fff;
+  }
+
+  form button {
+    min-height: 46px;
+    margin-top: .35rem;
+  }
+
+  @media (max-width: 640px) {
+    body { padding: 5rem .75rem 1.25rem; }
+
+    body > div:not(:first-of-type) {
+      margin-left: auto;
+      margin-right: auto;
+      padding: 1.35rem;
+      border-radius: 1.25rem;
+    }
+  }
+</style>
+
   </head>
 
   <body class="bg-gray-100 flex items-center justify-center min-h-screen">

@@ -9,13 +9,6 @@ pages_bp = Blueprint("pages", __name__)
 # Funções
 
 
-def check_teacher(rota1, rota2, TrueOrFalse):
-    if current_user.is_teacher == TrueOrFalse:
-        return rota1
-    else:
-        return rota2
-
-
 # Rotas dos templates
 
 
@@ -69,7 +62,7 @@ def dashboard():
         media_b1=mb1,
         media_b2=mb2,
         media_b3=mb3,
-        media_b4=mb4
+        media_b4=mb4,
     )
 
 
@@ -81,9 +74,11 @@ def cadastro():
 @pages_bp.route("/aluno/<int:student_id>")
 @login_required
 def aluno(student_id):
+    if current_user.is_teacher:
+        return redirect(url_for("pages.dashboard"))
+
     # Procura do estudante
     student_url_id = user.query.get(student_id)
-
 
     # Procura dos dados do aluno
     name = student_url_id.name
@@ -108,19 +103,18 @@ def aluno(student_id):
     mb3 = media([n.b3 for n in array_notas])
     mb4 = media([n.b4 for n in array_notas])
 
-    return check_teacher(
-        render_template("subpage.html", 
-                        modo="perfilaluno", 
-                        name=name, 
-                        matricula=matricula, 
-                        serie=serie, 
-                        turma_name=turma_name, 
-                        curso=curso,
-                        mb1=mb1,
-                        mb2=mb2,
-                        mb3=mb3,
-                        mb4=mb4
-                        ), url_for("pages.dashboard"), True
+    return render_template(
+        "subpage.html",
+        modo="perfilaluno",
+        name=name,
+        matricula=matricula,
+        serie=serie,
+        turma_name=turma_name,
+        curso=curso,
+        mb1=mb1,
+        mb2=mb2,
+        mb3=mb3,
+        mb4=mb4,
     )
 
 
@@ -130,25 +124,31 @@ def listadeprofessores():
     if not current_user.is_teacher:
         return redirect(url_for("pages.dashboard"))
 
-    professores_array = user.query.filter_by(turma_id=None, matricula=None, is_teacher=False).all()
+    professores_array = user.query.filter_by(
+        turma_id=None, matricula=None, is_teacher=False
+    ).all()
 
-    return render_template("subpage.html", modo="listaprofessores", professores_array = professores_array)
-
+    return render_template(
+        "subpage.html", modo="listaprofessores", professores_array=professores_array
+    )
 
 
 @pages_bp.route("/atividades")
 @login_required
 def atividades():
-    return check_teacher(
-        render_template("atividade.html", modo="atividades"),
-        url_for("pages.dashboard"),
-        False,
-    )
+    if current_user.is_teacher:
+        return redirect(url_for("pages.dashboard"))
+
+    render_template("atividade.html", modo="atividades"),
+    url_for("pages.dashboard")
 
 
 @pages_bp.route("/materias")
 @login_required
 def materias():
+    if current_user.is_teacher:
+        return redirect(url_for("pages.dashboard"))
+
     materia_ids = (
         db.session.query(notas.id_materia)
         .filter_by(id_user=current_user.id)
@@ -158,32 +158,37 @@ def materias():
     materia_ids = [m[0] for m in materia_ids]
     materias = materia.query.filter(materia.id.in_(materia_ids)).all()
 
-    return check_teacher(
-        render_template("subpage.html", modo="materias", materias=materias),
-        url_for("pages.dashboard"),
-        False,
-    )
+    return render_template("subpage.html", modo="materias", materias=materias)
 
 
-@pages_bp.route("/submateria")
+@pages_bp.route("/submateria/<int:materia_id>")
 @login_required
-def submateria():
-    return check_teacher(
-        render_template("subpage.html", modo="submateria"),
-        url_for("pages.dashboard"),
-        False,
-    )
+def submateria(materia_id):
+    if current_user.is_teacher:
+        return redirect(url_for("pages.dashboard"))
+
+    m = materia.query.get(materia_id)
+    nome = m.materia_name
+    return render_template("subpage.html", modo="submateria", nome=nome, materia_id = materia_id)
+
 
 @pages_bp.route("/turma/<int:classroom_id>")
 @login_required
 def turma_list(classroom_id):
+    if not current_user.is_teacher:
+        return redirect(url_for("pages.dashboard"))
+
     users_classroom = user.query.filter_by(turma_id=classroom_id).all()
     turma_info = turma.query.get(classroom_id)
 
-    return check_teacher(
-        render_template("subpage.html", modo="turma", users_classroom=users_classroom, turma_info=turma_info), url_for("pages.dashboard"), True
+    return render_template(
+        "subpage.html",
+        modo="turma",
+        users_classroom=users_classroom,
+        turma_info=turma_info,
     )
-    
+
+
 # Rotas post / Rotas de ações
 
 
@@ -313,6 +318,7 @@ def logout_materia(materia_id):
 
     return redirect(url_for("pages.materias"))
 
+
 @pages_bp.route("/p_confirmar/<int:teacher_id>")
 @login_required
 def confirmar_professor(teacher_id):
@@ -323,4 +329,3 @@ def confirmar_professor(teacher_id):
         db.session.commit()
 
     return redirect(url_for("pages.listadeprofessores"))
-

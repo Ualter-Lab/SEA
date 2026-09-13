@@ -169,7 +169,15 @@ def submateria(materia_id):
 
     m = materia.query.get(materia_id)
     nome = m.materia_name
-    return render_template("subpage.html", modo="submateria", nome=nome, materia_id = materia_id)
+
+    notas_materia = notas.query.filter_by(id_materia=materia_id, id_user=current_user.id).first()
+
+    b1 = notas_materia.b1 if notas_materia and notas_materia.b1 is not None else 0.0
+    b2 = notas_materia.b2 if notas_materia and notas_materia.b2 is not None else 0.0
+    b3 = notas_materia.b3 if notas_materia and notas_materia.b3 is not None else 0.0
+    b4 = notas_materia.b4 if notas_materia and notas_materia.b4 is not None else 0.0
+
+    return render_template("subpage.html", modo="submateria", nome=nome, materia_id = materia_id, b1=b1, b2=b2, b3=b3, b4=b4)
 
 
 @pages_bp.route("/turma/<int:classroom_id>")

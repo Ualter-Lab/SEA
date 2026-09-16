@@ -74,9 +74,6 @@ def cadastro():
 @pages_bp.route("/aluno/<int:student_id>")
 @login_required
 def aluno(student_id):
-    if current_user.is_teacher:
-        return redirect(url_for("pages.dashboard"))
-
     # Procura do estudante
     student_url_id = user.query.get(student_id)
 
@@ -133,14 +130,13 @@ def listadeprofessores():
     )
 
 
-@pages_bp.route("/atividades")
+@pages_bp.route("/atividades/<int:materia_id>")
 @login_required
-def atividades():
+def atividades(materia_id):
     if current_user.is_teacher:
         return redirect(url_for("pages.dashboard"))
 
-    render_template("atividade.html", modo="atividades"),
-    url_for("pages.dashboard")
+    render_template("atividade.html", modo="atividades")
 
 
 @pages_bp.route("/materias")
@@ -195,7 +191,6 @@ def turma_list(classroom_id):
         users_classroom=users_classroom,
         turma_info=turma_info,
     )
-
 
 # Rotas post / Rotas de ações
 

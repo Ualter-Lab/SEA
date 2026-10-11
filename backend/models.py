@@ -24,6 +24,8 @@ class materia(db.Model):
     __tablename__ = 'materia'
     id = db.Column(db.Integer, primary_key=True)
     materia_name = db.Column(db.String(80), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user = db.relationship("user", backref="materias")
 
 class atividade(db.Model):
     __tablename__ = 'atividade'
@@ -32,6 +34,19 @@ class atividade(db.Model):
     descricao = db.Column(db.String(200), nullable=False)
     data_fim = db.Column(db.Date, nullable=False)
     turma_id = db.Column(db.Integer, db.ForeignKey('turma.id'), nullable=False)
+    materia_id = db.Column(db.Integer, db.ForeignKey('materia.id'), nullable=False)
+    valor = db.Column(db.Float)
+
+class dire_aluno(db.Model):
+    __tablename__ = 'dire_aluno'
+    id = db.Column(db.Integer, primary_key=True)
+    id_aluno = db.Column(db.Integer,  db.ForeignKey('user.id'), nullable=False)
+    status = db.Column(db.String(40))
+    diretorio = db.Column(db.String(100), nullable=True)
+    relacao_atividade = db.Column(db.Integer, db.ForeignKey('atividade.id'), nullable=False)
+    nota = db.Column(db.Float)
+    atividade_ref = db.relationship("atividade")
+
 
 class notas(db.Model):
     __tablename__ = 'notas'

@@ -6,7 +6,7 @@ import flask_sqlalchemy #type: ignore
 
 db = flask_sqlalchemy.SQLAlchemy()
 login_manager = LoginManager()
-login_manager.login_view = "url_for('/')"
+login_manager.login_view = "pages.login"
 
 def create_app():
     load_dotenv()
@@ -17,8 +17,8 @@ def create_app():
     app = Flask(__name__, template_folder=template_dir)
 
     app.config['SECRET_KEY'] = os.getenv('KEY')
-
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     db.init_app(app)

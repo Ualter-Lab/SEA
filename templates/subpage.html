@@ -5,170 +5,211 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SEA - IFAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
-  
-<style>
-  :root {
-    --sea-green: #166534;
-    --sea-green-hover: #15803d;
-    --sea-bg: #f3f4f6;
-  }
 
-  * { box-sizing: border-box; }
+    <style>
+      :root {
+        --sea-green: #166534;
+        --sea-green-hover: #15803d;
+        --sea-bg: #f3f4f6;
+      }
 
-  html { scroll-behavior: smooth; }
+      * {
+        box-sizing: border-box;
+      }
 
-  body {
-    margin: 0;
-    background:
-      radial-gradient(circle at 10% 0%, rgba(22,101,52,.06), transparent 28%),
-      radial-gradient(circle at 90% 10%, rgba(22,101,52,.045), transparent 25%),
-      var(--sea-bg);
-    color: #1f2937;
-  }
+      html {
+        scroll-behavior: smooth;
+      }
 
-  body > div:first-of-type {
-    z-index: 50;
-    box-shadow: 0 2px 12px rgba(0,0,0,.08);
-    backdrop-filter: blur(8px);
-  }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(
+            circle at 10% 0%,
+            rgba(22, 101, 52, 0.06),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 90% 10%,
+            rgba(22, 101, 52, 0.045),
+            transparent 25%
+          ),
+          var(--sea-bg);
+        color: #1f2937;
+      }
 
-  a { transition: all .18s ease; }
+      body > div:first-of-type {
+        z-index: 50;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(8px);
+      }
 
-  input, select, textarea {
-    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
-  }
+      a {
+        transition: all 0.18s ease;
+      }
 
-  input:focus, select:focus, textarea:focus {
-    transform: translateY(-1px);
-  }
+      input,
+      select,
+      textarea {
+        transition:
+          border-color 0.18s ease,
+          box-shadow 0.18s ease,
+          transform 0.18s ease;
+      }
 
-  button {
-    cursor: pointer;
-    transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
-  }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        transform: translateY(-1px);
+      }
 
-  button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 7px 18px rgba(22,101,52,.16);
-  }
+      button {
+        cursor: pointer;
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease,
+          background-color 0.18s ease;
+      }
 
-  button:active { transform: translateY(0); }
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 7px 18px rgba(22, 101, 52, 0.16);
+      }
 
-  @media (max-width: 640px) {
-    body { overflow-x: hidden; }
+      button:active {
+        transform: translateY(0);
+      }
 
-    body > div:first-of-type {
-      padding: .85rem 1rem;
-    }
+      @media (max-width: 640px) {
+        body {
+          overflow-x: hidden;
+        }
 
-    body > div:first-of-type h1 {
-      font-size: .98rem;
-    }
+        body > div:first-of-type {
+          padding: 0.85rem 1rem;
+        }
 
-    body > div:first-of-type a {
-      font-size: .9rem;
-    }
+        body > div:first-of-type h1 {
+          font-size: 0.98rem;
+        }
 
-    .max-w-6xl, .max-w-4xl {
-      width: 100%;
-      max-width: none;
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
+        body > div:first-of-type a {
+          font-size: 0.9rem;
+        }
 
-    h2 { line-height: 1.2; }
+        .max-w-6xl,
+        .max-w-4xl {
+          width: 100%;
+          max-width: none;
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
 
-    input, select, textarea, button {
-      min-height: 44px;
-    }
-  }
-</style>
+        h2 {
+          line-height: 1.2;
+        }
 
-<style>
-  .max-w-4xl {
-    padding-top: 2rem;
-    padding-bottom: 2.5rem;
-  }
+        input,
+        select,
+        textarea,
+        button {
+          min-height: 44px;
+        }
+      }
+    </style>
 
-  .max-w-4xl > * {
-    animation: seaFadeUp .35s ease both;
-  }
+    <style>
+      .max-w-4xl {
+        padding-top: 2rem;
+        padding-bottom: 2.5rem;
+      }
 
-  .max-w-4xl .bg-white {
-    border: 1px solid rgba(229,231,235,.85);
-    box-shadow: 0 8px 26px rgba(17,24,39,.055);
-  }
+      .max-w-4xl > * {
+        animation: seaFadeUp 0.35s ease both;
+      }
 
-  .max-w-4xl .bg-gray-50,
-  .max-w-4xl .bg-gray-200 {
-    border: 1px solid rgba(229,231,235,.65);
-  }
+      .max-w-4xl .bg-white {
+        border: 1px solid rgba(229, 231, 235, 0.85);
+        box-shadow: 0 8px 26px rgba(17, 24, 39, 0.055);
+      }
 
-  .max-w-4xl li {
-    transition: background-color .18s ease, transform .18s ease;
-  }
+      .max-w-4xl .bg-gray-50,
+      .max-w-4xl .bg-gray-200 {
+        border: 1px solid rgba(229, 231, 235, 0.65);
+      }
 
-  .max-w-4xl li:hover {
-    transform: translateX(2px);
-  }
+      .max-w-4xl li {
+        transition:
+          background-color 0.18s ease,
+          transform 0.18s ease;
+      }
 
-  .max-w-4xl input,
-  .max-w-4xl select,
-  .max-w-4xl textarea {
-    background: #fff;
-  }
+      .max-w-4xl li:hover {
+        transform: translateX(2px);
+      }
 
-  .max-w-4xl input[type="file"] {
-    width: 100%;
-    padding: .7rem;
-    border: 1px dashed #cbd5e1;
-    border-radius: .75rem;
-    background: #f8fafc;
-    font-size: .9rem;
-  }
+      .max-w-4xl input,
+      .max-w-4xl select,
+      .max-w-4xl textarea {
+        background: #fff;
+      }
 
-  .max-w-4xl a {
-    font-weight: 600;
-  }
+      .max-w-4xl input[type="file"] {
+        width: 100%;
+        padding: 0.7rem;
+        border: 1px dashed #cbd5e1;
+        border-radius: 0.75rem;
+        background: #f8fafc;
+        font-size: 0.9rem;
+      }
 
-  @keyframes seaFadeUp {
-    from { opacity: 0; transform: translateY(7px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+      .max-w-4xl a {
+        font-weight: 600;
+      }
 
-  @media (max-width: 640px) {
-    .max-w-4xl {
-      padding-top: 1.25rem;
-      padding-bottom: 1.5rem;
-    }
+      @keyframes seaFadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(7px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    .max-w-4xl .grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
+      @media (max-width: 640px) {
+        .max-w-4xl {
+          padding-top: 1.25rem;
+          padding-bottom: 1.5rem;
+        }
 
-    .max-w-4xl .md\:col-span-2 {
-      grid-column: auto;
-    }
+        .max-w-4xl .grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
 
-    .max-w-4xl .flex.justify-between {
-      align-items: flex-start;
-      gap: .75rem;
-    }
+        .max-w-4xl .md\:col-span-2 {
+          grid-column: auto;
+        }
 
-    .max-w-4xl .flex.justify-between > span {
-      flex-shrink: 0;
-    }
+        .max-w-4xl .flex.justify-between {
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
 
-    .max-w-4xl .inline-block {
-      width: 100%;
-    }
+        .max-w-4xl .flex.justify-between > span {
+          flex-shrink: 0;
+        }
 
-    .max-w-4xl button {
-      width: 100%;
-    }
-  }
-</style>
+        .max-w-4xl .inline-block {
+          width: 100%;
+        }
 
+        .max-w-4xl button {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body class="bg-gray-100 min-h-screen">
     <!-- Navbar -->
@@ -179,7 +220,7 @@
 
     {% if modo == "perfilaluno" %}
 
-    <div class="max-w-4xl mx-auto p-6">
+    <div class="max-w-xl mx-auto p-6">
       <h2 class="text-2xl font-bold text-gray-800 mb-6">Perfil do Aluno</h2>
 
       <!-- Informações do Aluno -->
@@ -234,7 +275,7 @@
               <a href="#" class="text-green-900 hover:underline"
                 >Ver Atividade</a
               >
-              <br/>
+              <br />
               <form action="/corrigir" method="post" class="mt-2">
                 <label for="nota">Nota:</label>
                 <input
@@ -306,8 +347,10 @@
 
     {% elif modo == "turma" %}
 
-    <div class="max-w-4xl mx-auto p-6">
-      <h2 class="text-2xl font-bold text-gray-800 text-start">Turma: {{ turma_info.serie }}º {{ turma_info.nome }}</h2>
+    <div class="max-w-xl mx-auto p-6">
+      <h2 class="text-2xl font-bold text-gray-800 text-start">
+        Turma: {{ turma_info.serie }}º {{ turma_info.nome }}
+      </h2>
       <h3 class="text-start mb-6 text-gray-600">
         Curso: {{ turma_info.curso }}
       </h3>
@@ -332,32 +375,45 @@
 
     {% elif modo == "atividades" %}
 
-    <div class="max-w-4xl mx-auto p-6">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">
-        Atividades Disponíveis
-      </h2>
+<div class="max-w-xl mx-auto p-6">
 
-      <!-- Card da atividade -->
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">
+    Atividades Disponíveis
+  </h2>
+
+  <!-- ATIVIDADES PENDENTES -->
+  {% if atividades_pendentes %}
+
+    {% for a in atividades_pendentes %}
+
       <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+
         <h3 class="text-lg font-semibold text-gray-800">
-          Matemática - Equações
+          {{ a.name }}
         </h3>
 
-        <p class="text-gray-600 mt-2">Resolver os exercícios da página 45.</p>
+        <p class="text-gray-600 mt-2">
+          {{ a.descricao }}
+        </p>
 
-        <p class="text-sm text-gray-500 mt-2">Prazo: 15/04/2026</p>
+        <p class="text-sm text-gray-500 mt-2">
+          Prazo: {{ a.data_fim.strftime('%d/%m/%Y') }}
+        </p>
 
         <!-- Form de envio -->
         <form
-          action="/enviar-atividade"
+          action="/update-files/{{ a.id }}"
           method="post"
           enctype="multipart/form-data"
           class="mt-4 space-y-3"
         >
-          <!-- ID oculto da atividade -->
-          <input type="hidden" name="id_atividade" value="1" />
 
-          <input type="file" name="arquivo" required class="w-full" />
+          <input
+            type="file"
+            name="arquivo"
+            required
+            class="w-full"
+          />
 
           <button
             type="submit"
@@ -365,38 +421,72 @@
           >
             Enviar atividade
           </button>
+
         </form>
+
       </div>
 
-      <!-- Exemplo de atividade já enviada -->
-      <div>
-        <br />
-        <div class="bg-white p-6 rounded-xl shadow-md">
-          <h3 class="text-lg font-semibold text-gray-800">AV1</h3>
-          <p class="text-sm text-gray-500 mt-2">Já enviada</p>
-          <p class="text-sm text-gray-500 mt-2">Pontos: 0/0</p>
-          <span
-            class="inline-block mt-3 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
-          >
-            Pendente de correção
-          </span>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-md mt-4">
-          <h3 class="text-lg font-semibold text-gray-800">AV2</h3>
-          <p class="text-sm text-gray-500 mt-2">Já enviada</p>
-          <p class="text-sm text-gray-500 mt-2">Pontos: 0/0</p>
-          <span
-            class="inline-block mt-3 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
-          >
-            Pendente de correção
-          </span>
-        </div>
-      </div>
+    {% endfor %}
+
+  {% else %}
+
+    <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+      <h3 class="text-lg font-semibold text-gray-800">
+        Sem atividades pendentes!
+      </h3>
     </div>
+
+  {% endif %}
+
+
+  <!-- ATIVIDADES JÁ ENTREGUES -->
+  {% if atividade_entregue_array %}
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 mt-10">
+      Atividades Entregues
+    </h2>
+
+    {% for e in atividade_entregue_array %}
+
+      <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+
+        <h3 class="text-lg font-semibold text-gray-800">
+          {{ e.atividade_ref.name }}
+        </h3>
+
+        <p class="text-sm text-gray-500 mt-2">
+          Já enviada
+        </p>
+
+        <p class="text-sm text-gray-500 mt-2">
+          Pontos: {{ e.nota }}/{{ e.atividade_ref.valor }}
+        </p>
+
+        {% if e.status == "pendente" %}
+        <span
+          class="inline-block mt-3 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
+        >
+          Pendente de correção
+        </span>
+        {% else %}
+        <span
+          class="inline-block mt-3 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+        >
+          correção feita
+        </span>
+        {% endif %}
+
+      </div>
+
+    {% endfor %}
+
+  {% endif %}
+
+</div>
 
     {% elif modo == "listaprofessores" %}
 
-    <div class="max-w-4xl mx-auto p-6">
+    <div class="max-w-xl mx-auto p-6">
       <div>
         <h2 class="text-2xl font-bold text-gray-800 text-start">Professor</h2>
         <h3 class="text-start mb-6 text-gray-600">
@@ -414,7 +504,9 @@
             <div class="font-light">{{ p.is_teacher }}</div>
             <div class="text-sm text-gray-500 mt-1">
               <a href="/p_excluir/{{ p.id }}" class="text-red-900">Excluir</a> |
-              <a href="/p_confirmar/{{ p.id }}" class="text-green-900">Confirmar</a>
+              <a href="/p_confirmar/{{ p.id }}" class="text-green-900"
+                >Confirmar</a
+              >
             </div>
           </li>
           {% endfor %}
@@ -424,15 +516,18 @@
 
     {% elif modo == "materias" %}
 
-    <div class="max-w-4xl mx-auto p-6">
+    <div class="max-w-xl mx-auto p-6">
       <div class="bg-white p-6 rounded-xl shadow mt-8">
         <ul class="text-gray-700 mb-4">
           {% for m in materias%}
           <li class="px-3 py-2 odd:bg-gray-200">
             <div class="font-medium">{{ m.materia_name }}</div>
             <div class="text-sm text-gray-500 mt-1">
-              <a href="/logout_materia/{{ m.id }}" class="text-red-900">Sair</a> |
-              <a href="/submateria/{{ m.id }}" class="text-green-900">Ver matéria</a>
+              <a href="/logout_materia/{{ m.id }}" class="text-red-900">Sair</a>
+              |
+              <a href="/submateria/{{ m.id }}" class="text-green-900"
+                >Ver matéria</a
+              >
             </div>
           </li>
           {% endfor %}
@@ -458,34 +553,40 @@
 
     {% elif modo == "submateria" %}
 
-    <div class="max-w-4xl mx-auto p-6">
-      <div class="bg-white p-6 rounded-xl shadow mb-8 inline-block">
+    <div class="max-w-xl mx-auto p-6">
+      <div class="bg-white p-6 rounded-xl shadow mb-8">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 text-start">
           Notas de {{ nome }}
         </h3>
-        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
-          <p>1º bimestre</p>
-          <p class="font-extrabold text-xl text-center">{{ b1 }}</p>
-        </div>
-        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
-          <p>2º bimestre</p>
-          <p class="font-extrabold text-xl text-center">{{ b2 }}</p>
-        </div>
-        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
-          <p>3º bimestre</p>
-          <p class="font-extrabold text-xl text-center">{{ b3 }}</p>
-        </div>
-        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
-          <p>4º bimestre</p>
-          <p class="font-extrabold text-xl text-center">{{ b4 }}</p>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow max-w-6xl mx-auto text-left">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4">Atividades de {{ nome }}</h3>
-          <p>
-            <a href="/atividades/{{ materia_id }}" class="text-green-700 hover:underline"
-              >Ver todas as minhas Atividades</a
-            >
-          </p>
+        <div class="text-center">
+          <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
+            <p>1º bimestre</p>
+            <p class="font-extrabold text-xl text-center">{{ b1 }}</p>
+          </div>
+          <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
+            <p>2º bimestre</p>
+            <p class="font-extrabold text-xl text-center">{{ b2 }}</p>
+          </div>
+          <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
+            <p>3º bimestre</p>
+            <p class="font-extrabold text-xl text-center">{{ b3 }}</p>
+          </div>
+          <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
+            <p>4º bimestre</p>
+            <p class="font-extrabold text-xl text-center">{{ b4 }}</p>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow max-w-md mx-auto">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">
+              Atividades de {{ nome }}
+            </h3>
+            <p>
+              <a
+                href="/atividades/{{ materia_id }}"
+                class="text-green-700 hover:underline"
+                >Ver todas as minhas Atividades</a
+              >
+            </p>
+          </div>
         </div>
       </div>
     </div>

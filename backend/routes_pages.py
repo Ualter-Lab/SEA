@@ -1,10 +1,14 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash  # type: ignore
 from flask_login import current_user, login_user, logout_user, login_required  # type: ignore
 from . import db
-from .models import user, turma, materia, notas
+from .models import user, turma, materia, notas, atividade, dire_aluno
 from werkzeug.security import generate_password_hash, check_password_hash  # type: ignore
+from werkzeug.utils import secure_filename # type: ignore
+import os
 
 pages_bp = Blueprint("pages", __name__)
+
+FILES_PATH = os.getenv("FILES_PATH")
 
 # Funções
 
@@ -22,10 +26,12 @@ def login():
 def dashboard():
     if current_user.is_teacher:
         turmas = turma.query.all()
+        materia_array = materia.query.all()
 
         return render_template(
             "startpage.html",
             turmas=turmas,
+            materia_array=materia_array,
             serie=None,
             curso=None,
             name_turma=None,
@@ -129,15 +135,43 @@ def listadeprofessores():
         "subpage.html", modo="listaprofessores", professores_array=professores_array
     )
 
-
 @pages_bp.route("/atividades/<int:materia_id>")
 @login_required
 def atividades(materia_id):
     if current_user.is_teacher:
         return redirect(url_for("pages.dashboard"))
 
-    render_template("atividade.html", modo="atividades")
+    turma_id_user = current_user.turma_id
 
+    atividades_array = atividade.query.filter_by(
+        turma_id=turma_id_user,
+        materia_id=materia_id
+    ).all()
+
+    atividade_entregue_array = dire_aluno.query.filter_by(
+        id_aluno=current_user.id
+    ).all()
+
+    id_atividade_entregue_array = [
+        e.relacao_atividade.id
+        if hasattr(e.relacao_atividade, "id")
+        else int(e.relacao_atividade)
+        for e in atividade_entregue_array
+    ]
+
+    atividades_pendentes = [
+        a for a in atividades_array
+        if a.id not in id_atividade_entregue_array
+    ]
+
+    return render_template(
+        "subpage.html",
+        modo="atividades",
+        atividades_array=atividades_array,
+        id_atividade_entregue_array=id_atividade_entregue_array,
+        atividade_entregue_array=atividade_entregue_array,
+        atividades_pendentes=atividades_pendentes
+    )
 
 @pages_bp.route("/materias")
 @login_required
@@ -282,8 +316,9 @@ def register():
 @login_required
 def criar_materia():
     materia_name = request.form["materia"]
+    user_id = current_user.id
 
-    new_materia = materia(materia_name=materia_name)
+    new_materia = materia(materia_name=materia_name, user_id = user_id)
 
     db.session.add(new_materia)
     db.session.commit()
@@ -332,3 +367,82 @@ def confirmar_professor(teacher_id):
         db.session.commit()
 
     return redirect(url_for("pages.listadeprofessores"))
+
+@pages_bp.route("/p_excluir/<int:teacher_id>")
+def excluir_teacher(teacher_id):
+    user_teacher = user.query.get(teacher_id)
+
+    if user_teacher:
+        db.session.delete(user_teacher)
+        db.session.commit()
+        return redirect(url_for("pages.listadeprofessores"))
+    else:
+        return redirect(url_for("pages.listadeprofessores"))
+
+    
+@pages_bp.route("/excluir_materia/<int:id>", methods=["POST"])
+@login_required
+def excluir_materia(id):
+    materia_obj = materia.query.get(id)
+    id_teacher = materia_obj.user_id
+    teacher = user.query.get(id_teacher)
+    password_hash = teacher.password
+    password = request.form["password_teacher"]
+
+
+    if check_password_hash(password_hash, password) and materia_obj:
+        db.session.delete(materia_obj)
+        db.session.commit()
+        return redirect(url_for("pages.dashboard"))
+    else:
+        return redirect(url_for("pages.dashboard"))
+
+@pages_bp.route("/criar-atividade", methods=["POST"])
+@login_required
+def criar_atividade():
+    name = request.form["titulo"]
+    descricao = request.form["descricao"]
+    data_fim = request.form["data_entrega"]
+    turma = request.form["turma"]
+    valor = request.form["valor"]
+    materia_id = request.form["materia_id"]
+
+    atividade_ref = atividade(name=name, descricao=descricao, data_fim=data_fim, turma_id=turma, materia_id=materia_id, valor=valor)
+    materia_obj = materia.query.get(materia_id)
+
+    if not materia_obj:
+        return "Matéria não encontrada", 404
+    elif current_user.is_teacher:
+        db.session.add(atividade_ref)
+        db.session.commit()
+        return redirect(url_for("pages.dashboard"))
+    else:
+        return redirect(url_for("pages.dashboard"))
+
+@pages_bp.route("/update-files/<int:id_atividade>", methods=["POST"])
+@login_required
+def update_files(id_atividade):
+    atividade_obj = atividade.query.get(id_atividade)
+    materia_id = atividade_obj.materia_id
+
+    file = request.files.get('arquivo')
+
+    if not file or file.filename == '':
+        return "Nenhum arquivo encontrado", 400
+
+    ref_dire_aluno = dire_aluno(id_aluno = current_user.id,
+    status = "pendente",
+    relacao_atividade = id_atividade,
+    nota = 0)
+
+    db.session.add(ref_dire_aluno)
+    db.session.flush()
+
+    extensao = os.path.splitext(file.filename)[1]
+
+    ref_dire_aluno.diretorio = os.path.join(f"{FILES_PATH}{ref_dire_aluno.id}{extensao}")
+
+    file.save(ref_dire_aluno.diretorio)
+
+    db.session.commit()  
+    return redirect(url_for("pages.atividades", materia_id=materia_id))

@@ -29,9 +29,9 @@ Sistema web em Flask para gestão acadêmica. Professores criam matérias e ativ
 
 ### Aluno
 
-- Dashboard com curso, série, turma e média por bimestre (B1 a B4).
+- Dashboard com curso, série, turma e média de todas as atividade.
 - Entrar e sair de matérias.
-- Consulta das notas de cada matéria por bimestre.
+- Consulta das notas de cada atividade.
 - Lista de atividades por matéria, com prazo e descrição.
 - Envio de arquivo para cada atividade pendente.
 
@@ -355,7 +355,7 @@ O projeto usa `db.create_all()`, sem migrações. Ele cria tabelas novas, mas n�
 
 ## Roadmap
 
-- Lançamento de notas B1 a B4 pelo professor.
+- Lançamento de notas pelo professor.
 - Correção de entregas com nota e mudança de status para `corrigida`.
 - Download das entregas pelo professor.
 - Dashboard do professor com atividades reais.

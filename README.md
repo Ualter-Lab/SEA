@@ -1,123 +1,240 @@
 # SEA - Sistema de Envio de Atividades
 
-Sistema web desenvolvido em Flask para gerenciamento acadêmico, permitindo o cadastro de alunos e professores, organização de turmas e matérias, lançamento de notas por bimestre e acompanhamento de atividades.
+Sistema web em Flask para gestão acadêmica. Professores criam matérias e atividades por turma. Alunos entram nas matérias, acompanham notas por bimestre e enviam arquivos das atividades.
 
-## 📚 Sobre o Projeto
+## Sumário
 
-O SEA (Sistema de Envio de Atividades) foi criado para auxiliar instituições de ensino no gerenciamento de atividades acadêmicas.
+- [Funcionalidades](#funcionalidades)
+- [Estado atual do projeto](#estado-atual-do-projeto)
+- [Tecnologias](#tecnologias)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Banco de dados](#banco-de-dados)
+- [Rotas](#rotas)
+- [Instalação](#instalação)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
+- [Usando PostgreSQL](#usando-postgresql)
+- [Roadmap](#roadmap)
+- [Autor](#autor)
 
-A plataforma permite:
+## Funcionalidades
 
-- Cadastro e login de usuários (alunos e professores)
-- Organização de alunos por turma, curso e série
-- Matrícula do aluno em matérias
-- Lançamento e acompanhamento de notas por bimestre (B1 a B4)
-- Dashboard do aluno com médias calculadas automaticamente
-- Painel de atividades
+### Autenticação e cadastro
 
-## 🛠️ Tecnologias Utilizadas
+- Login e logout com sessão (Flask-Login).
+- Senhas com hash (Werkzeug).
+- Cadastro de aluno com curso, série, turma e matrícula.
+- Cadastro de professor escolhendo o curso "Professor". Os campos de série, turma e matrícula somem do formulário (`script.js`).
+- Turma criada automaticamente no cadastro, caso a combinação curso + série + turma ainda não exista.
+- Professor recém-cadastrado fica em espera. Um professor já aprovado confirma ou exclui a solicitação.
+
+### Aluno
+
+- Dashboard com curso, série, turma e média por bimestre (B1 a B4).
+- Entrar e sair de matérias.
+- Consulta das notas de cada matéria por bimestre.
+- Lista de atividades por matéria, com prazo e descrição.
+- Envio de arquivo para cada atividade pendente.
+
+### Professor
+
+- Dashboard com todas as turmas.
+- Lista de alunos por turma.
+- Perfil do aluno com atividades pendentes e corrigidas.
+- Criação de matérias.
+- Exclusão de matéria com confirmação por senha.
+- Criação de atividades com título, descrição, prazo, valor, turma e matéria.
+- Aprovação ou exclusão de solicitações de novos professores.
+
+## Estado atual do projeto
+
+| Recurso | Situação |
+|---|---|
+| Login, cadastro e logout | Pronto |
+| Aprovação de professores | Pronto |
+| Turmas, matérias e matrícula do aluno | Pronto |
+| Criação de atividades | Pronto |
+| Envio de arquivos pelo aluno | Pronto |
+| Exibição de notas e médias | Pronto |
+| Lançamento de notas pelo professor | Não implementado |
+| Correção de atividades (`/corrigir`) | Em desenvolvimento (só o formulário na interface) |
+| Download das entregas pelo professor | Em desenvolvimento |
+| "Atividades Recentes" no dashboard do professor | Conteúdo de exemplo (estático) |
+
+## Tecnologias
 
 - Python 3
-- Flask
-- Flask-SQLAlchemy
-- Flask-Login (autenticação e sessão)
-- Werkzeug Security (hash de senhas)
-- SQLite / PostgreSQL (via SQLAlchemy)
+- Flask 3.1
+- Flask-SQLAlchemy 3.1 / SQLAlchemy 2.0
+- Flask-Login 0.6
+- Werkzeug (hash de senhas e `secure_filename`)
+- python-dotenv
+- SQLite ou PostgreSQL (`psycopg2-binary`)
 - Jinja2
-- Tailwind CSS (via CDN)
+- Tailwind CSS via CDN
+- JavaScript puro (`backend/static/script.js`)
 
-## 📁 Estrutura do Projeto
+## Estrutura do projeto
 
 ```text
 SEA/
-│
 ├── backend/
-│   ├── __init__.py        # Factory da aplicação (create_app)
-│   ├── models.py          # Modelos: user, turma, materia, atividade, notas
-│   ├── routes_pages.py    # Rotas de páginas e ações (login, cadastro, notas...)
+│   ├── __init__.py        # Factory da aplicação (create_app), db e LoginManager
+│   ├── models.py          # Modelos do banco
+│   ├── routes_pages.py    # Blueprint "pages": páginas e ações
 │   └── static/
-│       └── script.js
+│       └── script.js      # Campos dinâmicos do cadastro
 │
 ├── templates/
 │   ├── login.html         # Login e cadastro (modo="login" | "cadastro")
-│   ├── startpage.html     # Dashboard (aluno e professor)
-│   └── subpage.html       # Turmas, perfil do aluno, professores, matérias...
+│   ├── startpage.html     # Dashboard (aluno, professor ou aguardando aprovação)
+│   └── subpage.html       # Demais telas, escolhidas pela variável "modo"
 │
-├── run.py
+├── src/
+│   └── files/             # Arquivos enviados pelos alunos (ignorado pelo Git)
+│
+├── run.py                 # Ponto de entrada (porta 5234)
 ├── requirements.txt
 ├── tailwind.config.js
-└── README.md
+├── .env                   # Não versionado
+└── .gitignore
 ```
 
-## 🗄️ Banco de Dados
+### Modos do `subpage.html`
+
+| `modo` | Tela |
+|---|---|
+| `perfilaluno` | Perfil do aluno e atividades pendentes/corrigidas |
+| `turma` | Alunos de uma turma |
+| `atividades` | Atividades de uma matéria e envio de arquivo |
+| `listaprofessores` | Solicitações de professores |
+| `materias` | Matérias do aluno e formulário para entrar em outra |
+| `submateria` | Notas B1 a B4 de uma matéria |
+
+## Banco de dados
+
+```mermaid
+erDiagram
+    TURMA ||--o{ USER : "agrupa"
+    TURMA ||--o{ ATIVIDADE : "recebe"
+    USER ||--o{ MATERIA : "cria (professor)"
+    MATERIA ||--o{ ATIVIDADE : "contém"
+    USER ||--o{ NOTAS : "possui"
+    MATERIA ||--o{ NOTAS : "referencia"
+    USER ||--o{ DIRE_ALUNO : "entrega"
+    ATIVIDADE ||--o{ DIRE_ALUNO : "recebe entregas"
+```
 
 ### user
 
 | Campo | Tipo | Observações |
 |---|---|---|
-| id | Integer | Chave primária |
-| name | String | |
-| username | String | Único |
-| turma_id | Integer | FK → `turma.id` |
-| matricula | Integer | Único |
-| password | String | Hash gerado com `werkzeug.security` |
-| is_teacher | Boolean | Define se o usuário é professor |
+| id | Integer | PK |
+| name | String(80) | Obrigatório |
+| username | String(80) | Único, obrigatório |
+| turma_id | Integer | FK para `turma.id`. Nulo para professores |
+| matricula | Integer | Único. Nulo para professores |
+| password | String | Hash Werkzeug |
+| is_teacher | Boolean | `False` por padrão. Vira `True` na aprovação |
 
 ### turma
 
 | Campo | Tipo | Observações |
 |---|---|---|
-| id | Integer | Chave primária |
-| name | String(1) | Identificador da turma (ex.: "A") |
-| curso | String | |
-| serie | Integer | |
+| id | Integer | PK |
+| name | String(1) | Letra da turma (A, B) |
+| curso | String(80) | Ex.: Meio Ambiente |
+| serie | Integer | 1, 2 ou 3 |
 
 ### materia
 
-| Campo | Tipo |
-|---|---|
-| id | Integer |
-| materia_name | String |
+| Campo | Tipo | Observações |
+|---|---|---|
+| id | Integer | PK |
+| materia_name | String(80) | Obrigatório |
+| user_id | Integer | FK para `user.id`. Professor que criou a matéria |
 
 ### atividade
 
 | Campo | Tipo | Observações |
 |---|---|---|
-| id | Integer | Chave primária |
-| name | String | |
-| descricao | String | |
-| data_fim | Date | |
-| turma_id | Integer | FK → `turma.id` |
+| id | Integer | PK |
+| name | String(80) | Título |
+| descricao | String(200) | |
+| data_fim | Date | Prazo de entrega |
+| turma_id | Integer | FK para `turma.id` |
+| materia_id | Integer | FK para `materia.id` |
+| valor | Float | Pontuação da atividade |
+
+### dire_aluno
+
+Registra cada entrega de atividade.
+
+| Campo | Tipo | Observações |
+|---|---|---|
+| id | Integer | PK. Também é o nome do arquivo salvo |
+| id_aluno | Integer | FK para `user.id` |
+| relacao_atividade | Integer | FK para `atividade.id` |
+| status | String(40) | `pendente` ou `corrigida` |
+| diretorio | String(100) | Caminho do arquivo no disco |
+| nota | Float | Nota da entrega |
 
 ### notas
 
 | Campo | Tipo | Observações |
 |---|---|---|
-| id | Integer | Chave primária |
-| id_user | Integer | FK → `user.id` |
-| id_materia | Integer | FK → `materia.id` |
-| b1, b2, b3, b4 | Float | Notas por bimestre |
+| id | Integer | PK |
+| id_user | Integer | FK para `user.id` |
+| id_materia | Integer | FK para `materia.id` |
+| b1, b2, b3, b4 | Float | Nota por bimestre. Nulo até ser lançada |
 
-## 🌐 Rotas Principais
+Entrar em uma matéria cria uma linha em `notas` com os quatro bimestres nulos. Sair da matéria apaga essa linha.
+
+## Rotas
+
+Todas as rotas abaixo ficam no blueprint `pages`.
+
+### Públicas
 
 | Rota | Método | Descrição |
 |---|---|---|
-| `/` | GET | Página de login |
-| `/cadastro` | GET | Página de cadastro |
+| `/` | GET | Tela de login |
+| `/cadastro` | GET | Tela de cadastro |
 | `/login` | POST | Autentica o usuário |
-| `/register` | POST | Cria um novo usuário |
-| `/logout` | GET | Encerra a sessão |
-| `/dashboard` | GET | Painel do aluno (com médias por bimestre) ou do professor |
-| `/turmas` | GET | Listagem de turmas (professor) |
-| `/aluno` | GET | Perfil do aluno |
-| `/professores` | GET | Listagem de professores |
-| `/materias` | GET | Matérias em que o aluno está matriculado |
-| `/entrar_matéria` | POST | Matricula o aluno em uma matéria |
-| `/logout_materia/<id>` | GET | Remove a matrícula do aluno em uma matéria |
-| `/criar-matéria` | POST | Cria uma nova matéria |
-| `/atividades` | GET | Painel de atividades |
+| `/register` | POST | Cria usuário (e turma, se necessário) |
 
-## ⚙️ Instalação
+### Todos os usuários logados
+
+| Rota | Método | Descrição |
+|---|---|---|
+| `/dashboard` | GET | Painel do aluno, do professor ou tela de espera |
+| `/logout` | GET | Encerra a sessão |
+| `/aluno/<student_id>` | GET | Perfil do aluno e suas atividades |
+
+### Aluno
+
+| Rota | Método | Descrição |
+|---|---|---|
+| `/materias` | GET | Matérias em que está matriculado |
+| `/entrar_matéria` | POST | Matricula em uma matéria |
+| `/logout_materia/<id>` | GET | Remove a matrícula |
+| `/submateria/<materia_id>` | GET | Notas B1 a B4 da matéria |
+| `/atividades/<materia_id>` | GET | Atividades da matéria na turma do aluno |
+| `/update-files/<id_atividade>` | POST | Envia o arquivo da atividade |
+
+### Professor
+
+| Rota | Método | Descrição |
+|---|---|---|
+| `/turma/<classroom_id>` | GET | Alunos da turma |
+| `/professores` | GET | Solicitações de novos professores |
+| `/p_confirmar/<teacher_id>` | GET | Aprova professor |
+| `/p_excluir/<teacher_id>` | GET | Exclui solicitação |
+| `/criar-matéria` | POST | Cria matéria |
+| `/excluir_materia/<id>` | POST | Exclui matéria (exige senha) |
+| `/criar-atividade` | POST | Cria atividade para uma turma e matéria |
+| `/download-files/<id_atividade>/<id_student>` | POST | Baixa a entrega do aluno (em desenvolvimento) |
+
+## Instalação
 
 ### 1. Clone o repositório
 
@@ -126,7 +243,7 @@ git clone https://github.com/Ualter-Lab/SEA.git
 cd SEA
 ```
 
-### 2. Crie e ative um ambiente virtual
+### 2. Crie e ative o ambiente virtual
 
 ```bash
 python -m venv venv
@@ -150,75 +267,103 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Configure o arquivo `.env`
+### 4. Crie a pasta de uploads
 
-Crie um arquivo `.env` na raiz do projeto:
-
-```env
-KEY=sua_chave_secreta
-DATABASE_URL=sqlite:///sea.db
+```bash
+mkdir -p src/files
 ```
 
-Isso já é suficiente para rodar com SQLite. Para usar PostgreSQL, veja a seção abaixo.
+### 5. Configure o `.env`
 
-### 5. Execute o projeto
+Veja [Variáveis de ambiente](#variáveis-de-ambiente).
+
+### 6. Execute
 
 ```bash
 python run.py
 ```
 
-O SQLAlchemy criará automaticamente as tabelas (`user`, `turma`, `materia`, `atividade`, `notas`) na primeira execução.
-
-O sistema ficará disponível em:
+As tabelas são criadas automaticamente na primeira execução. O sistema abre em:
 
 ```text
 http://localhost:5234
 ```
 
-## 🐘 Usando PostgreSQL (opcional)
+### 7. Crie o primeiro professor
+
+Todo professor novo precisa da aprovação de outro professor. O primeiro precisa ser promovido manualmente.
+
+1. Cadastre-se em `/cadastro` com o curso "Professor".
+2. Rode o script abaixo na raiz do projeto:
+
+```python
+from run import app
+from backend import db
+from backend.models import user
+
+with app.app_context():
+    u = user.query.filter_by(username="seu_usuario").first()
+    u.is_teacher = True
+    db.session.commit()
+```
+
+## Variáveis de ambiente
+
+Crie o arquivo `.env` na raiz:
+
+```env
+KEY=sua_chave_secreta
+DATABASE_URL=sqlite:///sea.db
+FILES_PATH=src/files/
+```
+
+| Variável | Uso |
+|---|---|
+| `KEY` | Chave secreta das sessões do Flask |
+| `DATABASE_URL` | String de conexão do SQLAlchemy |
+| `FILES_PATH` | Pasta dos uploads. Deve terminar com `/` e a pasta precisa existir |
+
+> O nome do arquivo é montado como `FILES_PATH` + id da entrega + extensão. Sem a barra final, o arquivo é salvo no lugar errado.
+
+## Usando PostgreSQL
 
 ### 1. Instale o PostgreSQL
 
-Baixe e instale em [postgresql.org](https://www.postgresql.org/download/). Durante a instalação, defina uma senha para o usuário `postgres`.
+Baixe em [postgresql.org](https://www.postgresql.org/download/) e defina uma senha para o usuário `postgres`.
 
-### 2. Crie o banco de dados
-
-No terminal do PostgreSQL (`psql`):
+### 2. Crie o banco
 
 ```sql
 CREATE DATABASE sea;
 ```
 
-### 3. Configure a conexão no `.env`
+### 3. Ajuste o `.env`
 
 ```env
-KEY=sua_chave_secreta
 DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/sea
 ```
 
-Exemplo:
-
-```env
-DATABASE_URL=postgresql://postgres:123456@localhost:5432/sea
-```
-
-### 4. Rode o projeto normalmente
+### 4. Rode normalmente
 
 ```bash
 python run.py
 ```
 
-O SQLAlchemy cria as tabelas automaticamente ao subir a aplicação.
+## Atualizando um banco existente
 
-## 🚀 Funcionalidades Futuras
+O projeto usa `db.create_all()`, sem migrações. Ele cria tabelas novas, mas não altera tabelas já existentes. Se o seu banco é anterior às colunas `materia.user_id`, `atividade.materia_id`, `atividade.valor` e à tabela `dire_aluno`, recrie o banco (apague o `sea.db` no SQLite) ou aplique as alterações manualmente.
 
-- Recuperação de senha
-- Upload de arquivos nas atividades
-- Dashboard com estatísticas mais completas
-- Área exclusiva para lançamento de notas pelo professor
-- Controle de entrega de atividades
+## Roadmap
 
-## 👨‍💻 Autor
+- Lançamento de notas B1 a B4 pelo professor.
+- Correção de entregas com nota e mudança de status para `corrigida`.
+- Download das entregas pelo professor.
+- Dashboard do professor com atividades reais.
+- Migrações com Flask-Migrate.
+- Recuperação de senha.
+- Estatísticas mais completas no dashboard.
+
+## Autor
 
 Desenvolvido por Walter Neto.
 

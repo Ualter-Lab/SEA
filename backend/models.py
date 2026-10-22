@@ -42,18 +42,15 @@ class dire_aluno(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_aluno = db.Column(db.Integer,  db.ForeignKey('user.id'), nullable=False)
     status = db.Column(db.String(40))
+    atividade_nome = db.Column(db.String(100), nullable=True)
     diretorio = db.Column(db.String(100), nullable=True)
     relacao_atividade = db.Column(db.Integer, db.ForeignKey('atividade.id'), nullable=False)
     nota = db.Column(db.Float)
     atividade_ref = db.relationship("atividade")
 
 
-class notas(db.Model):
-    __tablename__ = 'notas'
+class materias_ref(db.Model):
+    __tablename__ = 'materias_ref'
     id = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False )
     id_materia = db.Column(db.Integer, db.ForeignKey("materia.id"), nullable=False)
-    b1 = db.Column(db.Float)
-    b2 = db.Column(db.Float)
-    b3 = db.Column(db.Float)
-    b4 = db.Column(db.Float)

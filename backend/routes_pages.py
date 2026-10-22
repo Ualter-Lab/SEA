@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, url_for, redirect, request, flash  # type: ignore
+from flask import Blueprint, render_template, url_for, redirect, request, flash, send_file  # type: ignore
 from flask_login import current_user, login_user, logout_user, login_required  # type: ignore
 from . import db
-from .models import user, turma, materia, notas, atividade, dire_aluno
+from .models import user, turma, materia, materias_ref, atividade, dire_aluno
 from werkzeug.security import generate_password_hash, check_password_hash  # type: ignore
 from werkzeug.utils import secure_filename # type: ignore
 import os
@@ -11,8 +11,6 @@ pages_bp = Blueprint("pages", __name__)
 FILES_PATH = os.getenv("FILES_PATH")
 
 # Funções
-
-
 # Rotas dos templates
 
 
@@ -49,26 +47,21 @@ def dashboard():
     else:
         serie = curso = name_turma = None
 
-    array_notas = notas.query.filter_by(id_user=current_user.id).all()
+    array_notas = dire_aluno.query.filter_by(id_aluno=current_user.id).all()
 
-    def media(valores):
-        array_bi = [v for v in valores if v is not None]
-        return sum(array_bi) / len(array_bi) if array_bi else 0
+    sum_notas = sum(n.nota for n in array_notas if n.nota is not None)
 
-    mb1 = media([n.b1 for n in array_notas])
-    mb2 = media([n.b2 for n in array_notas])
-    mb3 = media([n.b3 for n in array_notas])
-    mb4 = media([n.b4 for n in array_notas])
+    len_notas = dire_aluno.query.filter_by(id_aluno=current_user.id).count()
+
+    nota_final = sum_notas / len_notas if len_notas > 0 else 0
+
 
     return render_template(
         "startpage.html",
         serie=serie,
         curso=curso,
         name_turma=name_turma,
-        media_b1=mb1,
-        media_b2=mb2,
-        media_b3=mb3,
-        media_b4=mb4,
+        nota_final=nota_final
     )
 
 
@@ -93,31 +86,22 @@ def aluno(student_id):
     curso = classroom_student.curso
 
     # Atividades
+    atividades_pendente = dire_aluno.query.filter_by(id_aluno=student_id, status="pendente").all()
 
-    # Desempenho por Bimestre
-    array_notas = notas.query.filter_by(id_user=student_id).all()
-
-    def media(valores):
-        array_bi = [v for v in valores if v is not None]
-        return sum(array_bi) / len(array_bi) if array_bi else 0
-
-    mb1 = media([n.b1 for n in array_notas])
-    mb2 = media([n.b2 for n in array_notas])
-    mb3 = media([n.b3 for n in array_notas])
-    mb4 = media([n.b4 for n in array_notas])
+    atividades_corrigida = dire_aluno.query.filter_by(id_aluno=student_id, status="corrigida").all()
 
     return render_template(
         "subpage.html",
         modo="perfilaluno",
+        student_id=student_id,
         name=name,
         matricula=matricula,
         serie=serie,
         turma_name=turma_name,
         curso=curso,
-        mb1=mb1,
-        mb2=mb2,
-        mb3=mb3,
-        mb4=mb4,
+        atividades_pendente=atividades_pendente,
+        atividades_corrigida=atividades_corrigida
+
     )
 
 
@@ -180,7 +164,7 @@ def materias():
         return redirect(url_for("pages.dashboard"))
 
     materia_ids = (
-        db.session.query(notas.id_materia)
+        db.session.query(materias_ref.id_materia)
         .filter_by(id_user=current_user.id)
         .distinct()
         .all()
@@ -200,14 +184,16 @@ def submateria(materia_id):
     m = materia.query.get(materia_id)
     nome = m.materia_name
 
-    notas_materia = notas.query.filter_by(id_materia=materia_id, id_user=current_user.id).first()
+    nota_materia = dire_aluno.query.filter_by(id_aluno=current_user.id, relacao_atividade=materia_id).all()
 
-    b1 = notas_materia.b1 if notas_materia and notas_materia.b1 is not None else 0.0
-    b2 = notas_materia.b2 if notas_materia and notas_materia.b2 is not None else 0.0
-    b3 = notas_materia.b3 if notas_materia and notas_materia.b3 is not None else 0.0
-    b4 = notas_materia.b4 if notas_materia and notas_materia.b4 is not None else 0.0
+    sum_nota_materia = sum(n.nota for n in nota_materia if n.nota is not None)
 
-    return render_template("subpage.html", modo="submateria", nome=nome, materia_id = materia_id, b1=b1, b2=b2, b3=b3, b4=b4)
+    len_nota_materia = dire_aluno.query.filter_by(id_aluno=current_user.id, relacao_atividade=materia_id).count()
+
+    nota_materia = sum_nota_materia / len_nota_materia if len_nota_materia > 0 else 0
+
+    return render_template("subpage.html", modo="submateria", nome=nome, materia_id=materia_id, 
+    nota_materia=nota_materia)
 
 
 @pages_bp.route("/turma/<int:classroom_id>")
@@ -334,11 +320,11 @@ def entrar_materia():
 
     user_id = current_user.id
 
-    new_nota = notas(
-        id_user=user_id, id_materia=id_materia, b1=None, b2=None, b3=None, b4=None
+    new_materias_ref = materias_ref(
+        id_user=user_id, id_materia=id_materia
     )
 
-    db.session.add(new_nota)
+    db.session.add(new_materias_ref)
     db.session.commit()
 
     flash("Matéria entrada com sucesso!", "sucesso")
@@ -348,10 +334,10 @@ def entrar_materia():
 @pages_bp.route("/logout_materia/<int:materia_id>")
 @login_required
 def logout_materia(materia_id):
-    nota = notas.query.filter_by(id_user=current_user.id, id_materia=materia_id).first()
+    materia_ref = materias_ref.query.filter_by(id_user=current_user.id, id_materia=materia_id).first()
 
-    if nota:
-        db.session.delete(nota)
+    if materia_ref:
+        db.session.delete(materia_ref)
         db.session.commit()
 
     return redirect(url_for("pages.materias"))
@@ -424,14 +410,17 @@ def criar_atividade():
 def update_files(id_atividade):
     atividade_obj = atividade.query.get(id_atividade)
     materia_id = atividade_obj.materia_id
+    
 
     file = request.files.get('arquivo')
+    atividade_name = file.filename
 
     if not file or file.filename == '':
         return "Nenhum arquivo encontrado", 400
 
     ref_dire_aluno = dire_aluno(id_aluno = current_user.id,
     status = "pendente",
+    atividade_nome = atividade_name,
     relacao_atividade = id_atividade,
     nota = 0)
 
@@ -446,3 +435,32 @@ def update_files(id_atividade):
 
     db.session.commit()  
     return redirect(url_for("pages.atividades", materia_id=materia_id))
+
+@pages_bp.route("/download-files/<int:id_atividade>/<int:id_student>", methods=["GET"])
+@login_required
+def download_files(id_atividade, id_student):
+    atividade_ref = dire_aluno.query.filter_by(relacao_atividade = id_atividade, id_aluno = id_student).first()
+
+    caminho = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", atividade_ref.diretorio)
+)
+
+    return send_file(
+        caminho,
+        as_attachment=True,
+        download_name=atividade_ref.atividade_nome
+    )
+
+@pages_bp.route("/corrigir-atividade/<int:id_atividade>/<int:id_student>", methods=["POST"])
+@login_required
+def corrigir_atividade(id_atividade, id_student):
+    atividade_ref = dire_aluno.query.filter_by(relacao_atividade = id_atividade, id_aluno = id_student).first()
+
+    nota = request.form["nota"]
+
+    atividade_ref.nota = nota
+    atividade_ref.status = "corrigida"
+
+    db.session.commit()
+
+    return redirect(url_for("pages.atividades", materia_id=atividade_ref.relacao_atividade))

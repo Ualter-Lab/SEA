@@ -236,31 +236,19 @@
 
       <div class="bg-white p-6 rounded-xl shadow mb-8 inline-block">
         <h3 class="text-lg font-semibold text-gray-800 mb-4 text-start">
-          Média de Notas por Bimestre
+          Média geral
         </h3>
         <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
-          <p>1º bimestre</p>
-          <p class="font-extrabold text-xl text-center">
-            {{ media_b1|round(2) }}
+          <p>Geral</p>
+          {% if nota_final >= 6 %}
+          <p class="font-extrabold text-xl text-center text-green-700">
+            {{ nota_final | round(2) }}
           </p>
-        </div>
-        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
-          <p>2º bimestre</p>
-          <p class="font-extrabold text-xl text-center">
-            {{ media_b2|round(2) }}
+          {% else %}
+          <p class="font-extrabold text-xl text-center text-red-700">
+            {{ nota_final | round(2) }}
           </p>
-        </div>
-        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
-          <p>3º bimestre</p>
-          <p class="font-extrabold text-xl text-center">
-            {{ media_b3|round(2) }}
-          </p>
-        </div>
-        <div class="bg-gray-200 p-4 rounded-lg mb-2 inline-block">
-          <p>4º bimestre</p>
-          <p class="font-extrabold text-xl text-center">
-            {{ media_b4|round(2) }}
-          </p>
+          {% endif %}
         </div>
         <div class="bg-white p-6 rounded-xl shadow max-w-6xl mx-auto text-left">
           <h3 class="text-lg font-semibold text-gray-800 mb-4">Matérias</h3>
@@ -437,30 +425,6 @@
         </form>
         {% endfor %}
       </div>
-
-      <!-- Atividades -->
-      <div class="bg-white p-6 rounded-xl shadow mt-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">
-          Atividades Recentes
-        </h2>
-
-        <div class="space-y-4">
-          <!-- Atividade Card -->
-          <div class="bg-white p-5 rounded-xl shadow">
-            <h3 class="font-semibold text-gray-800">Atividade 1</h3>
-            <p class="text-sm text-gray-500">Enviada para 3º A Informática</p>
-            <p class="mt-2 text-gray-700">Descrição breve da atividade...</p>
-          </div>
-
-          <div class="bg-white p-5 rounded-xl shadow">
-            <h3 class="font-semibold text-gray-800">Atividade 2</h3>
-            <p class="text-sm text-gray-500">Enviada para todas as turmas</p>
-            <p class="mt-2 text-gray-700">Descrição breve da atividade...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
     {% endif%}
   </body>
 </html>

@@ -1,344 +1,324 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SEA - IFAL</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  
-<style>
-  :root {
-    --sea-green: #166534;
-    --sea-green-hover: #15803d;
-    --sea-bg: #f3f4f6;
-  }
 
-  * { box-sizing: border-box; }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEA - IFAL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  html { scroll-behavior: smooth; }
-
-  body {
-    margin: 0;
-    background:
-      radial-gradient(circle at 10% 0%, rgba(22,101,52,.06), transparent 28%),
-      radial-gradient(circle at 90% 10%, rgba(22,101,52,.045), transparent 25%),
-      var(--sea-bg);
-    color: #1f2937;
-  }
-
-  body > div:first-of-type {
-    z-index: 50;
-    box-shadow: 0 2px 12px rgba(0,0,0,.08);
-    backdrop-filter: blur(8px);
-  }
-
-  a { transition: all .18s ease; }
-
-  input, select, textarea {
-    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
-  }
-
-  input:focus, select:focus, textarea:focus {
-    transform: translateY(-1px);
-  }
-
-  button {
-    cursor: pointer;
-    transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
-  }
-
-  button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 7px 18px rgba(22,101,52,.16);
-  }
-
-  button:active { transform: translateY(0); }
-
-  @media (max-width: 640px) {
-    body { overflow-x: hidden; }
-
-    body > div:first-of-type {
-      padding: .85rem 1rem;
+  <style>
+    :root {
+      --sea-green: #166534;
+      --sea-green-hover: #15803d;
+      --sea-bg: #f3f4f6;
     }
 
-    body > div:first-of-type h1 {
-      font-size: .98rem;
+    * {
+      box-sizing: border-box;
     }
 
-    body > div:first-of-type a {
-      font-size: .9rem;
+    html {
+      scroll-behavior: smooth;
     }
 
-    .max-w-6xl, .max-w-4xl {
-      width: 100%;
-      max-width: none;
-      padding-left: 1rem;
-      padding-right: 1rem;
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(22, 101, 52, .06), transparent 28%),
+        radial-gradient(circle at 90% 10%, rgba(22, 101, 52, .045), transparent 25%),
+        var(--sea-bg);
+      color: #1f2937;
     }
 
-    h2 { line-height: 1.2; }
-
-    input, select, textarea, button {
-      min-height: 44px;
+    body>div:first-of-type {
+      z-index: 50;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, .08);
+      backdrop-filter: blur(8px);
     }
-  }
-</style>
 
-<style>
-  body {
-    padding: 5.5rem 1rem 2rem;
-  }
-
-  body > div:first-of-type {
-    position: fixed;
-  }
-
-  body > div:not(:first-of-type) {
-    border: 1px solid rgba(229,231,235,.9);
-    box-shadow: 0 20px 55px rgba(17,24,39,.10);
-    transition: box-shadow .2s ease, transform .2s ease;
-  }
-
-  body > div:not(:first-of-type):hover {
-    box-shadow: 0 24px 65px rgba(17,24,39,.13);
-  }
-
-  body > div:not(:first-of-type) h1 {
-    letter-spacing: -.025em;
-  }
-
-  form label {
-    margin-bottom: .35rem;
-  }
-
-  form input, form select {
-    min-height: 46px;
-    background: #fff;
-  }
-
-  form button {
-    min-height: 46px;
-    margin-top: .35rem;
-  }
-
-  @media (max-width: 640px) {
-    body { padding: 5rem .75rem 1.25rem; }
-
-    body > div:not(:first-of-type) {
-      margin-left: auto;
-      margin-right: auto;
-      padding: 1.35rem;
-      border-radius: 1.25rem;
+    a {
+      transition: all .18s ease;
     }
-  }
-</style>
 
-  </head>
+    input,
+    select,
+    textarea {
+      transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
 
-  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <!-- Navbar -->
-    <div
-      class="bg-green-800 text-white p-4 flex justify-between absolute top-0 left-0 w-full"
-    >
-      <h1 class="font-bold">SEA - IFAL</h1>
-    </div>
-    {% if modo == "login"%}
-    <div
-      class="m-5 max-w-sm mt-20 mx-auto bg-white shadow-xl rounded-2xl p-8 w-full"
-    >
-      <!-- Título -->
-      <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">
-        Acessar Conta
-      </h1>
+    input:focus,
+    select:focus,
+    textarea:focus {
+      transform: translateY(-1px);
+    }
 
-      <form action="/login" method="post" class="space-y-4">
-        <!-- Username -->
-        <div>
-          <label for="username" class="block text-sm font-medium text-gray-700">
-            Usuário
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          />
-        </div>
+    button {
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+    }
 
-        <!-- Password -->
-        <div class="">
-          <label for="password" class="block text-sm font-medium text-gray-700">
-            Senha
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          />
-        </div>
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 18px rgba(22, 101, 52, .16);
+    }
 
-        <!-- Botão -->
-        <button
-          type="submit"
-          class="w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-200"
-        >
-          Entrar
-        </button>
-      </form>
+    button:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      body {
+        overflow-x: hidden;
+      }
+
+      body>div:first-of-type {
+        padding: .85rem 1rem;
+      }
+
+      body>div:first-of-type h1 {
+        font-size: .98rem;
+      }
+
+      body>div:first-of-type a {
+        font-size: .9rem;
+      }
+
+      .max-w-6xl,
+      .max-w-4xl {
+        width: 100%;
+        max-width: none;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      h2 {
+        line-height: 1.2;
+      }
+
+      input,
+      select,
+      textarea,
+      button {
+        min-height: 44px;
+      }
+    }
+  </style>
+
+  <style>
+    body {
+      padding: 5.5rem 1rem 2rem;
+    }
+
+    body>div:first-of-type {
+      position: fixed;
+    }
+
+    body>div:not(:first-of-type) {
+      border: 1px solid rgba(229, 231, 235, .9);
+      box-shadow: 0 20px 55px rgba(17, 24, 39, .10);
+      transition: box-shadow .2s ease, transform .2s ease;
+    }
+
+    body>div:not(:first-of-type):hover {
+      box-shadow: 0 24px 65px rgba(17, 24, 39, .13);
+    }
+
+    body>div:not(:first-of-type) h1 {
+      letter-spacing: -.025em;
+    }
+
+    form label {
+      margin-bottom: .35rem;
+    }
+
+    form input,
+    form select {
+      min-height: 46px;
+      background: #fff;
+    }
+
+    form button {
+      min-height: 46px;
+      margin-top: .35rem;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 5rem .75rem 1.25rem;
+      }
+
+      body>div:not(:first-of-type) {
+        margin-left: auto;
+        margin-right: auto;
+        padding: 1.35rem;
+        border-radius: 1.25rem;
+      }
+    }
+  </style>
+
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <!-- Navbar -->
+  <div class="bg-green-800 text-white p-4 flex justify-between absolute top-0 left-0 w-full">
+    <h1 class="font-bold">SEA - IFAL</h1>
+  </div>
+  {% if modo == "login"%}
+  <div class="m-5 max-w-sm mt-20 mx-auto bg-white shadow-xl rounded-2xl p-8 w-full">
+    <!-- Título -->
+    <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">
+      Acessar Conta
+    </h1>
+
+    <form action="/login" method="post" class="space-y-4">
+      <!-- Username -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700">
+          Usuário
+        </label>
+        <input type="text" id="username" name="username" required
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" />
+      </div>
+
+      <!-- Password -->
+      <div class="">
+        <label for="password" class="block text-sm font-medium text-gray-700">
+          Senha
+        </label>
+        <input type="password" id="password" name="password" required
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" />
+      </div>
+
+      <!-- Botão -->
+      <button type="submit"
+        class="w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-200">
+        Entrar
+      </button>
+    </form>
+    <p class="text-sm text-gray-500 text-center mt-6">
+      Não tem conta?
+      <a href="/cadastro" class="text-green-700 hover:underline">
+        Cadastrar
+      </a>
+    </p>
+  </div>
+  {% elif modo == "cadastro" %}
+  <div class="m-5 max-w-sm mt-20 mx-auto bg-white shadow-xl rounded-2xl p-8 w-full">
+    <!-- Título -->
+    <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">
+      Criar Conta
+    </h1>
+
+    <form action="/register" method="post" class="space-y-4">
+      <!-- Nome -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">
+          Nome Completo
+        </label>
+        <input type="text" id="name" name="name" required
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" />
+      </div>
+
+      <!-- Usuário -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700">
+          Usuário
+        </label>
+        <input type="text" id="username" name="username" required
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" />
+      </div>
+
+      <!-- Curso-->
+      <div>
+        <label for="curso" class="block text-sm font-medium text-gray-700">
+          Curso
+        </label>
+        <select name="curso" id="curso" required
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600">
+          <option value="">Selecione o curso</option>
+          <option value="Professor">Professor</option>
+          <option value="Desenvolvimento de Sistema">
+            Desenvolvimento de Sistema
+          </option>
+          <option value="Meio Ambiente">Meio Ambiente</option>
+          <option value="Guia de Turismo">Guia de Turismo</option>
+          <option value="Instrumento Musical">Instrumento Musical</option>
+          <option value="Hospedagem">Hospedagem</option>
+        </select>
+      </div>
+
+      <!-- Série -->
+      <div id="div_serie">
+        <label for="serie" class="block text-sm font-medium text-gray-700">
+          Série
+        </label>
+        <select name="serie" id="serie" required
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600">
+          <option value="">Selecione a série</option>
+          <option value="1">1º</option>
+          <option value="2">2º</option>
+          <option value="3">3º</option>
+        </select>
+      </div>
+
+      <!-- Turma -->
+      <div id="div_turma">
+        <label for="turma" class="block text-sm font-medium text-gray-700">
+          Turma
+        </label>
+        <select name="turma" id="turma" required
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600">
+          <option value="">Selecione a turma</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+        </select>
+      </div>
+
+      <!-- Matricula -->
+      <div id="div_matricula">
+        <label for="matricula" class="block text-sm font-medium text-gray-700">
+          Matrícula
+        </label>
+        <input type="number" id="matricula" name="matricula" required
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" />
+      </div>
+
+      <!-- Senha -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">
+          Senha
+        </label>
+        <input type="password" id="password" name="password" required
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" />
+      </div>
+
+      <!-- Rodapé -->
       <p class="text-sm text-gray-500 text-center mt-6">
-        Não tem conta?
-        <a href="/cadastro" class="text-green-700 hover:underline">
-          Cadastrar
-        </a>
+        Já tem conta?
+        <a href="/" class="text-green-700 hover:underline"> Entrar </a>
       </p>
-    </div>
-    {% elif modo == "cadastro" %}
-    <div
-      class="m-5 max-w-sm mt-20 mx-auto bg-white shadow-xl rounded-2xl p-8 w-full"
-    >
-      <!-- Título -->
-      <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">
-        Criar Conta
-      </h1>
 
-      <form action="/register" method="post" class="space-y-4">
-        <!-- Nome -->
-        <div>
-          <label for="name" class="block text-sm font-medium text-gray-700">
-            Nome Completo
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          />
-        </div>
+      <!-- Botão -->
+      <button type="submit"
+        class="w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-200">
+        Cadastrar
+      </button>
+    </form>
+  </div>
+  {% endif %}
+<div id="toast-container"
+     class="fixed top-5 right-5 z-[9999] flex flex-col gap-3">
+</div>
 
-        <!-- Usuário -->
-        <div>
-          <label for="username" class="block text-sm font-medium text-gray-700">
-            Usuário
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          />
-        </div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
-        <!-- Curso-->
-        <div>
-          <label for="curso" class="block text-sm font-medium text-gray-700">
-            Curso
-          </label>
-          <select
-            name="curso"
-            id="curso"
-            required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          >
-            <option value="">Selecione o curso</option>
-            <option value="Professor">Professor</option>
-            <option value="Desenvolvimento de Sistema">
-              Desenvolvimento de Sistema
-            </option>
-            <option value="Meio Ambiente">Meio Ambiente</option>
-            <option value="Guia de Turismo">Guia de Turismo</option>
-            <option value="Instrumento Musical">Instrumento Musical</option>
-            <option value="Hospedagem">Hospedagem</option>
-          </select>
-        </div>
+<script>
+    const mensagensFlash = {{ get_flashed_messages(with_categories=true) | tojson }};
 
-        <!-- Série -->
-        <div id="div_serie">
-          <label for="serie" class="block text-sm font-medium text-gray-700">
-            Série
-          </label>
-          <select
-            name="serie"
-            id="serie"
-            required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          >
-            <option value="">Selecione a série</option>
-            <option value="1">1º</option>
-            <option value="2">2º</option>
-            <option value="3">3º</option>
-          </select>
-        </div>
-
-        <!-- Turma -->
-        <div id="div_turma">
-          <label for="turma" class="block text-sm font-medium text-gray-700">
-            Turma
-          </label>
-          <select
-            name="turma"
-            id="turma"
-            required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          >
-            <option value="">Selecione a turma</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-          </select>
-        </div>
-
-        <!-- Matricula -->
-        <div id="div_matricula">
-          <label
-            for="matricula"
-            class="block text-sm font-medium text-gray-700"
-          >
-            Matrícula
-          </label>
-          <input
-            type="number"
-            id="matricula"
-            name="matricula"
-            required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          />
-        </div>
-
-        <!-- Senha -->
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">
-            Senha
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-          />
-        </div>
-
-        <!-- Rodapé -->
-        <p class="text-sm text-gray-500 text-center mt-6">
-          Já tem conta?
-          <a href="/" class="text-green-700 hover:underline"> Entrar </a>
-        </p>
-
-        <!-- Botão -->
-        <button
-          type="submit"
-          class="w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition duration-200"
-        >
-          Cadastrar
-        </button>
-      </form>
-    </div>
-    {% endif %}
-  </body>
+    mensagensFlash.forEach(([categoria, mensagem]) => {
+        mostrarToast(mensagem, categoria);
+    });
+</script>
+</body>
 </html>
-
-<script src="{{ url_for('static', filename='script.js') }}" defer></script>

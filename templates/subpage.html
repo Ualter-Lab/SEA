@@ -272,7 +272,7 @@
               <label for="nota">Nota:</label>
               <input type="number" id="nota" name="nota" min="0" max="10"
                 class="ml-2 px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" />
-                <br/>
+              <br />
               <button type="submit" class="mt-2 bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
                 Corrigir
               </button>
@@ -533,6 +533,10 @@
     </div>
   </div>
   {% endif%}
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3">
+  </div>
+
+  <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
 </body>
 
 </html>

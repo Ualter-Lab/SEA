@@ -30,3 +30,41 @@ campoCurso.addEventListener("change", gerenciarCampos);
 
 // Executa uma vez ao carregar a página para alinhar o estado inicial
 document.addEventListener("DOMContentLoaded", gerenciarCampos);
+
+function mostrarToast(mensagem, tipo = "sucesso") {
+    const container = document.getElementById("toast-container");
+
+    if (!container) {
+        console.error("Container de notificações não encontrado!");
+        return;
+    }
+
+    const estilos = {
+        sucesso: "bg-green-600",
+        erro: "bg-red-600",
+        aviso: "bg-yellow-500"
+    };
+
+    const icones = {
+        sucesso: "✓",
+        erro: "✕",
+        aviso: "!"
+    };
+
+    const toast = document.createElement("div");
+
+    toast.className = `${estilos[tipo] || estilos.aviso} text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-3`;
+
+    const icone = document.createElement("span");
+    icone.textContent = icones[tipo] || "!";
+
+    const texto = document.createElement("span");
+    texto.textContent = mensagem;
+
+    toast.append(icone, texto);
+    container.appendChild(toast);
+
+    setTimeout(() => toast.remove(), 3500);
+}
+
+toast.className = `${estilos[tipo] || estilos.aviso} border-0 text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-3`;

@@ -226,15 +226,15 @@ def login_post():
     usuario = user.query.filter_by(username=username).first()
 
     if not usuario:
-        flash("Usuário não encontrado", "error")
+        flash("Usuário não encontrado", "erro")
         return redirect(url_for("pages.login"))
 
     if not check_password_hash(usuario.password, password):
-        flash("Senha incorreta", "error")
+        flash("Senha incorreta", "erro")
         return redirect(url_for("pages.login"))
 
     login_user(usuario)
-    flash("Bem-vindo!", "success")
+    flash("Bem-vindo!", "sucesso")
 
     return redirect(url_for("pages.dashboard"))
 
@@ -243,7 +243,7 @@ def login_post():
 @login_required
 def logout():
     logout_user()
-    flash("Você saiu da sua conta.", "success")
+    flash("Você saiu da sua conta.", "sucesso")
     return redirect(url_for("pages.login"))
 
 
@@ -260,7 +260,8 @@ def register():
     usuario_existente = user.query.filter_by(username=username).first()
 
     if usuario_existente:
-        return url_for("pages.login", error="Esse usuário já existe")
+        flash("Esse usuário já existe", "erro")
+        return redirect(url_for("pages.login"))
 
     if not serie or serie.strip() == "":
         serie = None
@@ -294,7 +295,7 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
-    flash("Cadastro realizado com sucesso!", "success")
+    flash("Cadastro realizado com sucesso!", "sucesso")
     return redirect(url_for("pages.login"))
 
 

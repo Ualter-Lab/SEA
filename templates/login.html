@@ -313,9 +313,12 @@
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 
+<div id="mensagens-flash"
+     data-mensagens='{{ get_flashed_messages(with_categories=true) | tojson | forceescape }}'>
+</div>
 <script>
-    const mensagensFlash = {{ get_flashed_messages(with_categories=true) | tojson }};
-
+    const elemento = document.getElementById("mensagens-flash");
+    const mensagensFlash = JSON.parse(elemento.dataset.mensagens);
     mensagensFlash.forEach(([categoria, mensagem]) => {
         mostrarToast(mensagem, categoria);
     });

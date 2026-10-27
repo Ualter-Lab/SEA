@@ -469,6 +469,11 @@
         Professores
       </h3>
       <ul class="text-gray-700">
+        {% if professores_array|length == 0 %}
+        <li class="px-3 py-2 odd:bg-gray-200 rounded-lg">
+          <div class="font-medium">Nenhum professor encontrado</div>
+        </li>
+        {% else %}
         {% for p in professores_array %}
         <li class="px-3 py-2 odd:bg-gray-200">
           <div class="font-medium">{{ p.name }}</div>
@@ -479,6 +484,7 @@
           </div>
         </li>
         {% endfor %}
+        {% endif %}
       </ul>
     </div>
   </div>

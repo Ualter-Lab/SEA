@@ -500,7 +500,7 @@ def download_files(id_atividade, id_student):
 def corrigir_atividade(id_atividade, id_student):
     atividade_ref = dire_aluno.query.filter_by(relacao_atividade = id_atividade, id_aluno = id_student).first()
 
-    nota = request.form["nota"]
+    nota = float(request.form.get("nota", "").replace(",", "."))
 
     atividade_ref.nota = nota
     atividade_ref.status = "corrigida"

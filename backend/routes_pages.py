@@ -329,6 +329,12 @@ def criar_materia():
     materia_name = request.form["materia"]
     user_id = current_user.id
 
+    materia_obj = materia.query.filter_by(materia_name=materia_name).first()
+
+    if materia_obj:
+        flash("Essa matéria já existe!", "erro")
+        return redirect(url_for("pages.dashboard"))
+
     new_materia = materia(materia_name=materia_name, user_id = user_id)
 
     db.session.add(new_materia)
@@ -336,6 +342,31 @@ def criar_materia():
 
     flash("Matéria registrada com sucesso!", "sucesso")
     return redirect(url_for("pages.dashboard"))
+
+@pages_bp.route("/excluir_materia/<int:id>", methods=["POST"])
+@login_required
+def excluir_materia(id):
+    materia_obj = materia.query.get(id)
+    id_teacher = materia_obj.user_id
+    teacher = user.query.get(id_teacher)
+    password_hash = teacher.password
+    password = request.form["password_teacher"]
+
+    atividade_obj = atividade.query.filter_by(materia_id=id).first()
+
+    if atividade_obj:
+        flash("Não é possível remover a matéria, pois existem atividades associadas a ela.", "erro")
+        return redirect(url_for("pages.dashboard"))
+
+
+    if check_password_hash(password_hash, password) and materia_obj:
+        db.session.delete(materia_obj)
+        db.session.commit()
+        flash("Matéria removida com sucesso!", "sucesso")
+        return redirect(url_for("pages.dashboard"))
+    else:
+        flash("Erro ao remover matéria!", "erro")
+        return redirect(url_for("pages.dashboard"))
 
 
 @pages_bp.route("/entrar_matéria", methods=["POST"])
@@ -392,26 +423,6 @@ def excluir_teacher(teacher_id):
         return redirect(url_for("pages.listadeprofessores"))
     else:
         return redirect(url_for("pages.listadeprofessores"))
-
-    
-@pages_bp.route("/excluir_materia/<int:id>", methods=["POST"])
-@login_required
-def excluir_materia(id):
-    materia_obj = materia.query.get(id)
-    id_teacher = materia_obj.user_id
-    teacher = user.query.get(id_teacher)
-    password_hash = teacher.password
-    password = request.form["password_teacher"]
-
-
-    if check_password_hash(password_hash, password) and materia_obj:
-        db.session.delete(materia_obj)
-        db.session.commit()
-        flash("Matéria removida com sucesso!", "sucesso")
-        return redirect(url_for("pages.dashboard"))
-    else:
-        flash("Erro ao remover matéria!", "erro")
-        return redirect(url_for("pages.dashboard"))
 
 @pages_bp.route("/criar-atividade", methods=["POST"])
 @login_required

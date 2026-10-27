@@ -348,6 +348,11 @@
         Estudantes
       </h3>
       <ul class="text-gray-700">
+        {% if users_classroom|length == 0 %}
+        <li class="px-3 py-2 odd:bg-gray-200 rounded-lg">
+          <div class="font-medium">Nenhum estudante encontrado</div>
+        </li>
+        {% else %}
         {% for u in users_classroom %}
         <li class="px-3 py-2 odd:bg-gray-200">
           <div class="font-medium">{{ u.name }}</div>
@@ -357,6 +362,7 @@
           </div>
         </li>
         {% endfor %}
+        {% endif %}
       </ul>
     </div>
   </div>

@@ -14,6 +14,8 @@ FILES_PATH = os.getenv("FILES_PATH")
 # Rotas dos templates
 
 
+
+
 @pages_bp.route("/")
 def login():
     return render_template("login.html", modo="login")

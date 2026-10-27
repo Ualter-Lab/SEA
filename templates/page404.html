@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 - Página não encontrada | SEA - IFAL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --sea-green: #166534;
+      --sea-green-hover: #15803d;
+      --sea-bg: #f3f4f6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 5.5rem 1rem 2rem;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(22, 101, 52, .06), transparent 28%),
+        radial-gradient(circle at 90% 10%, rgba(22, 101, 52, .045), transparent 25%),
+        var(--sea-bg);
+      color: #1f2937;
+    }
+
+    a {
+      transition: all .18s ease;
+    }
+
+    button {
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+    }
+
+    button:hover,
+    a:hover {
+      transform: translateY(-1px);
+    }
+
+    .error-card {
+      border: 1px solid rgba(229, 231, 235, .9);
+      box-shadow: 0 20px 55px rgba(17, 24, 39, .10);
+      animation: aparecer .5s ease-out;
+    }
+
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 5rem .75rem 1.25rem;
+      }
+
+      .error-card {
+        padding: 2rem 1.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <header class="fixed top-0 left-0 z-50 w-full bg-green-800 text-white p-4 shadow-lg">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="font-bold text-lg">SEA - IFAL</h1>
+    </div>
+  </header>
+
+  <main class="flex-1 flex items-center justify-center">
+    <section class="error-card bg-white rounded-2xl p-10 max-w-lg w-full text-center">
+
+      <div class="mx-auto mb-6 flex items-center justify-center w-24 h-24 rounded-full bg-green-50">
+        <svg xmlns="http://www.w3.org/2000/svg"
+          class="w-12 h-12 text-green-800"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9.172 16.172a4 4 0 0 1 5.656 0M9 10h.01M15 10h.01M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" />
+        </svg>
+      </div>
+
+      <p class="text-7xl font-extrabold text-green-800 tracking-tight">
+        404
+      </p>
+
+      <h2 class="mt-4 text-2xl font-bold text-gray-900">
+        Página não encontrada
+      </h2>
+
+      <p class="mt-3 text-gray-500 leading-relaxed">
+        Ops! Não conseguimos encontrar a página que você está procurando.
+        Ela pode ter sido removida, estar indisponível ou o endereço pode estar incorreto.
+      </p>
+
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <button onclick="history.back()"
+          class="w-full sm:w-auto px-5 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50">
+          Voltar
+        </button>
+
+        <a href="/dashboard"
+          class="w-full sm:w-auto px-5 py-3 rounded-xl bg-green-800 text-white font-medium hover:bg-green-700">
+          Ir para o início
+        </a>
+      </div>
+
+      <div class="mt-8 pt-5 border-t border-gray-100">
+        <p class="text-sm text-gray-400">
+          SEA - Sistema de Estudos e Atividades · IFAL
+        </p>
+      </div>
+
+    </section>
+  </main>
+
+  <div id="toast-container"
+    class="fixed top-5 right-5 z-[9999] flex flex-col gap-3">
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+  <div id="mensagens-flash"
+    data-mensagens='{{ get_flashed_messages(with_categories=true) | tojson | forceescape }}'>
+  </div>
+
+  <script>
+    const elemento = document.getElementById("mensagens-flash");
+    const mensagensFlash = JSON.parse(elemento.dataset.mensagens);
+
+    mensagensFlash.forEach(([categoria, mensagem]) => {
+      mostrarToast(mensagem, categoria);
+    });
+  </script>
+
+</body>
+</html>

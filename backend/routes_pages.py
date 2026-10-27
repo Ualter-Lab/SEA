@@ -12,10 +12,6 @@ FILES_PATH = os.getenv("FILES_PATH")
 
 # Funções
 # Rotas dos templates
-
-
-
-
 @pages_bp.route("/")
 def login():
     return render_template("login.html", modo="login")
@@ -501,4 +497,16 @@ def corrigir_atividade(id_atividade, id_student):
     db.session.commit()
 
     flash("Atividade corrigida com sucesso!", "sucesso")
-    return redirect(url_for("pages.atividades", materia_id=atividade_ref.relacao_atividade))
+    return redirect(url_for("pages.aluno", student_id=id_student))
+
+@pages_bp.route("/revisar/atividade/<int:id_atividade>/<int:id_student>", methods=["POST"])
+@login_required
+def revisar_atividade(id_atividade, id_student):
+    atividade_ref = dire_aluno.query.filter_by(relacao_atividade = id_atividade, id_aluno = id_student).first()
+
+    atividade_ref.status = "pendente"
+
+    db.session.commit()
+
+    flash("Atividade revisada com sucesso!", "sucesso")
+    return redirect(url_for("pages.aluno", student_id=id_student))

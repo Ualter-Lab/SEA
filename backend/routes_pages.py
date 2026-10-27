@@ -86,9 +86,34 @@ def aluno(student_id):
     curso = classroom_student.curso
 
     # Atividades
-    atividades_pendente = dire_aluno.query.filter_by(id_aluno=student_id, status="pendente").all()
+    student_url_id = user.query.get_or_404(student_id)
 
-    atividades_corrigida = dire_aluno.query.filter_by(id_aluno=student_id, status="corrigida").all()
+    atividades_pendente = dire_aluno.query.join(
+        atividade, dire_aluno.relacao_atividade == atividade.id
+    ).join(
+        materia, atividade.materia_id == materia.id
+    ).filter(
+        dire_aluno.id_aluno == student_id,
+        dire_aluno.status == "pendente",
+        materia.user_id == current_user.id
+    ).all()
+
+    atividades_corrigida = dire_aluno.query.join(
+        atividade, dire_aluno.relacao_atividade == atividade.id
+    ).join(
+        materia, atividade.materia_id == materia.id
+    ).filter(
+        dire_aluno.id_aluno == student_id,
+        dire_aluno.status == "corrigida",
+        materia.user_id == current_user.id
+    ).all()
+
+    atividade_turma = atividade.query.join(
+        materia, atividade.materia_id == materia.id
+    ).filter(
+        atividade.turma_id == student_url_id.turma_id,
+        materia.user_id == current_user.id
+    ).first()
 
     return render_template(
         "subpage.html",
@@ -100,7 +125,8 @@ def aluno(student_id):
         turma_name=turma_name,
         curso=curso,
         atividades_pendente=atividades_pendente,
-        atividades_corrigida=atividades_corrigida
+        atividades_corrigida=atividades_corrigida,
+        atividade_turma=atividade_turma
 
     )
 
@@ -341,6 +367,7 @@ def logout_materia(materia_id):
         db.session.delete(materia_ref)
         db.session.commit()
 
+    flash("Matéria removida com sucesso!", "sucesso")
     return redirect(url_for("pages.materias"))
 
 
@@ -353,6 +380,7 @@ def confirmar_professor(teacher_id):
         user_teacher.is_teacher = True
         db.session.commit()
 
+    flash("Professor confirmado com sucesso!", "sucesso")
     return redirect(url_for("pages.listadeprofessores"))
 
 @pages_bp.route("/p_excluir/<int:teacher_id>")
@@ -362,6 +390,7 @@ def excluir_teacher(teacher_id):
     if user_teacher:
         db.session.delete(user_teacher)
         db.session.commit()
+        flash("Professor excluído com sucesso!", "sucesso")
         return redirect(url_for("pages.listadeprofessores"))
     else:
         return redirect(url_for("pages.listadeprofessores"))
@@ -380,8 +409,10 @@ def excluir_materia(id):
     if check_password_hash(password_hash, password) and materia_obj:
         db.session.delete(materia_obj)
         db.session.commit()
+        flash("Matéria removida com sucesso!", "sucesso")
         return redirect(url_for("pages.dashboard"))
     else:
+        flash("Erro ao remover matéria!", "erro")
         return redirect(url_for("pages.dashboard"))
 
 @pages_bp.route("/criar-atividade", methods=["POST"])
@@ -402,8 +433,10 @@ def criar_atividade():
     elif current_user.is_teacher:
         db.session.add(atividade_ref)
         db.session.commit()
+        flash("Atividade criada com sucesso!", "sucesso")
         return redirect(url_for("pages.dashboard"))
     else:
+        flash("Você não tem permissão para criar atividades.", "erro")
         return redirect(url_for("pages.dashboard"))
 
 @pages_bp.route("/update-files/<int:id_atividade>", methods=["POST"])
@@ -435,6 +468,7 @@ def update_files(id_atividade):
     file.save(ref_dire_aluno.diretorio)
 
     db.session.commit()  
+    flash("Atividade enviada com sucesso!", "sucesso")
     return redirect(url_for("pages.atividades", materia_id=materia_id))
 
 @pages_bp.route("/download-files/<int:id_atividade>/<int:id_student>", methods=["GET"])
@@ -464,4 +498,5 @@ def corrigir_atividade(id_atividade, id_student):
 
     db.session.commit()
 
+    flash("Atividade corrigida com sucesso!", "sucesso")
     return redirect(url_for("pages.atividades", materia_id=atividade_ref.relacao_atividade))

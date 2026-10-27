@@ -362,7 +362,7 @@
 
       {% for m in materia_array %}
       <form method="POST" action="/excluir_materia/{{ m.id }}">
-        <ul class="text-gray-700 max-w-[300px] border rounded-2xl">
+        <ul class="text-gray-700 max-w-[300px] border rounded-2xl mb-3 overflow-hidden">
           <li class="px-3 py-2 bg-gray-200">
             <div class="font-medium">{{ m.materia_name }}</div>
             <div class="text-sm text-gray-500 mt-1">
@@ -385,7 +385,17 @@
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3">
     </div>
 
-    <script src="{{ url_for('static', filename='js/toast.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <div id="mensagens-flash" data-mensagens='{{ get_flashed_messages(with_categories=true) | tojson | forceescape }}'>
+    </div>
+    <script>
+      const elemento = document.getElementById("mensagens-flash");
+      const mensagensFlash = JSON.parse(elemento.dataset.mensagens);
+      mensagensFlash.forEach(([categoria, mensagem]) => {
+        mostrarToast(mensagem, categoria);
+      });
+    </script>
 </body>
 
 </html>

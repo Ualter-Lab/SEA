@@ -153,7 +153,7 @@
         <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl text-center">
           <p class="text-gray-600">Geral</p>
           <p class="font-extrabold text-3xl {{ 'text-green-700' if nota_final >= 6 else 'text-red-700' }}">
-            {{ nota_final | round(2) }}
+            {{ nota_formatada }}
           </p>
         </div>
       </section>

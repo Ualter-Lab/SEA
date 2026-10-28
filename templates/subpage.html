@@ -438,9 +438,9 @@
       </h3>
       <div class="grid gap-4 sm:grid-cols-2">
         <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl text-center">
-          <p class="text-gray-600">1º bimestre</p>
+          <p class="text-gray-600">Notal geral</p>
           <p class="font-extrabold text-3xl {{ 'text-green-700' if nota_materia >= 6 else 'text-red-700' }}">
-            {{ nota_materia | round(2) }}
+            {{ nota_formatada }}
           </p>
         </div>
         <div class="border border-gray-200 p-4 rounded-xl">

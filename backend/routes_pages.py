@@ -52,6 +52,7 @@ def dashboard():
     len_notas = dire_aluno.query.filter_by(id_aluno=current_user.id).count()
 
     nota_final = sum_notas / len_notas if len_notas > 0 else 0
+    nota_formatada = f"{nota_final:.2f}".replace(".", ",")
 
 
     return render_template(
@@ -59,7 +60,8 @@ def dashboard():
         serie=serie,
         curso=curso,
         name_turma=name_turma,
-        nota_final=nota_final
+        nota_final=nota_final,
+        nota_formatada=nota_formatada
     )
 
 
@@ -215,9 +217,11 @@ def submateria(materia_id):
     len_nota_materia = dire_aluno.query.filter_by(id_aluno=current_user.id, relacao_atividade=materia_id).count()
 
     nota_materia = sum_nota_materia / len_nota_materia if len_nota_materia > 0 else 0
+    nota_materia = round(nota_materia, 2)
+    nota_formatada = f"{nota_materia:.2f}".replace(".", ",")
 
     return render_template("subpage.html", modo="submateria", nome=nome, materia_id=materia_id, 
-    nota_materia=nota_materia)
+    nota_materia=nota_materia, nota_formatada=nota_formatada)
 
 
 @pages_bp.route("/turma/<int:classroom_id>")
@@ -500,7 +504,7 @@ def download_files(id_atividade, id_student):
 def corrigir_atividade(id_atividade, id_student):
     atividade_ref = dire_aluno.query.filter_by(relacao_atividade = id_atividade, id_aluno = id_student).first()
 
-    nota = float(request.form.get("nota", "").replace(",", "."))
+    nota = float(request.form.get("nota", "").strip().replace(",", "."))
 
     atividade_ref.nota = nota
     atividade_ref.status = "corrigida"

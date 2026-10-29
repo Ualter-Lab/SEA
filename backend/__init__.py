@@ -18,7 +18,7 @@ def create_app():
 
     @app.errorhandler(404)
     def pagina_nao_encontrada(error):
-        return render_template("404.html"), 404
+        return render_template("page404.html"), 404
 
     app.config['SECRET_KEY'] = os.getenv('KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')

@@ -404,7 +404,7 @@ def logout_materia(materia_id):
     return redirect(url_for("pages.materias"))
 
 
-@pages_bp.route("/p_confirmar/<int:teacher_id>")
+@pages_bp.route("/p_confirmar/<int:teacher_id>", methods=["POST"])
 @login_required
 def confirmar_professor(teacher_id):
     if current_user.is_teacher:
@@ -425,7 +425,7 @@ def confirmar_professor(teacher_id):
     flash("Você não tem permissão para confirmar professores!", "erro")
     return redirect(url_for("pages.dashboard"))
 
-@pages_bp.route("/p_excluir/<int:teacher_id>")
+@pages_bp.route("/p_excluir/<int:teacher_id>", methods=["POST"])
 @login_required
 def excluir_teacher(teacher_id):
     if not current_user.is_teacher:

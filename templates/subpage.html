@@ -390,12 +390,18 @@
         {% else %}
         {% for p in professores_array %}
         <li class="px-3 py-2 rounded-lg odd:bg-green-50">
-          <div class="font-medium">{{ p.name }}</div>
-          <div class="font-light">{{ p.is_teacher }}</div>
-          <div class="text-sm mt-1 flex gap-4">
-            <a href="/p_excluir/{{ p.id }}" class="link link-danger">Excluir</a>
-            <a href="/p_confirmar/{{ p.id }}" class="link">Confirmar</a>
-          </div>
+          <form action="|">
+            <div class="font-medium">{{ p.name }}</div>
+            <div class="font-light">{{ p.is_teacher }}</div>
+            <div class="text-sm mt-1 flex gap-4">
+              <form action="/p_excluir/{{ p.id }}" method="post">
+                <button type="submit" class="link link-danger">Excluir</button>
+              </form>
+              <form action="/p_confirmar/{{ p.id }}" method="post">
+                <button type="submit" class="link">Confirmar</button>
+              </form>
+            </div>
+          </form>
         </li>
         {% endfor %}
         {% endif %}

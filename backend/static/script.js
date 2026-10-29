@@ -66,5 +66,3 @@ function mostrarToast(mensagem, tipo = "sucesso") {
 
     setTimeout(() => toast.remove(), 3500);
 }
-
-toast.className = `${estilos[tipo] || estilos.aviso} border-0 text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-3`;

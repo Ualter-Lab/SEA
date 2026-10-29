@@ -37,7 +37,7 @@ def dashboard():
             media_b4=None,
         )
 
-    turma_user = turma.query.get(current_user.turma_id)
+    turma_user = db.session.get(turma, current_user.turma_id)
     if turma_user is not None:
         serie = turma_user.serie
         curso = turma_user.curso
@@ -74,19 +74,19 @@ def cadastro():
 @login_required
 def aluno(student_id):
     # Procura do estudante
-    student_url_id = user.query.get(student_id)
+    student_url_id = db.session.get(user, student_id)
 
     # Procura dos dados do aluno
     name = student_url_id.name
     matricula = student_url_id.matricula
 
-    classroom_student = turma.query.get(student_url_id.turma_id)
+    classroom_student = db.session.get(turma, student_url_id.turma_id)
     serie = classroom_student.serie
     turma_name = classroom_student.name
     curso = classroom_student.curso
 
     # Atividades
-    student_url_id = user.query.get_or_404(student_id)
+    student_url_id = db.session.get(user, student_id)
 
     atividades_pendente = dire_aluno.query.join(
         atividade, dire_aluno.relacao_atividade == atividade.id
@@ -207,7 +207,7 @@ def submateria(materia_id):
     if current_user.is_teacher:
         return redirect(url_for("pages.dashboard"))
 
-    m = materia.query.get(materia_id)
+    m = db.session.get(materia, materia_id)
     nome = m.materia_name
 
     nota_materia = dire_aluno.query.filter_by(id_aluno=current_user.id, relacao_atividade=materia_id).all()
@@ -231,7 +231,7 @@ def turma_list(classroom_id):
         return redirect(url_for("pages.dashboard"))
 
     users_classroom = user.query.filter_by(turma_id=classroom_id).all()
-    turma_info = turma.query.get(classroom_id)
+    turma_info = db.session.get(turma, classroom_id)
 
     return render_template(
         "subpage.html",
@@ -350,9 +350,9 @@ def criar_materia():
 @pages_bp.route("/excluir_materia/<int:id>", methods=["POST"])
 @login_required
 def excluir_materia(id):
-    materia_obj = materia.query.get(id)
+    materia_obj = db.session.get(materia, id)
     id_teacher = materia_obj.user_id
-    teacher = user.query.get(id_teacher)
+    teacher = db.session.get(user, id_teacher)
     password_hash = teacher.password
     password = request.form["password_teacher"]
 
@@ -454,7 +454,7 @@ def criar_atividade():
     materia_id = request.form["materia_id"]
 
     atividade_ref = atividade(name=name, descricao=descricao, data_fim=data_fim, turma_id=turma, materia_id=materia_id, valor=valor)
-    materia_obj = materia.query.get(materia_id)
+    materia_obj = db.session.get(materia, materia_id) 
 
     if not materia_obj:
         return "Matéria não encontrada", 404
@@ -470,7 +470,7 @@ def criar_atividade():
 @pages_bp.route("/update-files/<int:id_atividade>", methods=["POST"])
 @login_required
 def update_files(id_atividade):
-    atividade_obj = atividade.query.get(id_atividade)
+    atividade_obj = db.session.get(atividade, id_atividade)
     materia_id = atividade_obj.materia_id
     
 

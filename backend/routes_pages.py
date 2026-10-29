@@ -407,14 +407,24 @@ def logout_materia(materia_id):
 @pages_bp.route("/p_confirmar/<int:teacher_id>")
 @login_required
 def confirmar_professor(teacher_id):
-    user_teacher = user.query.get(teacher_id)
+    
+    if current_user.is_teacher:
 
-    if user_teacher:
-        user_teacher.is_teacher = True
-        db.session.commit()
+        user_teacher = user.query.filter_by(id=teacher_id, is_teacher=False, matricula=None, turma_id=None).first()
 
-    flash("Professor confirmado com sucesso!", "sucesso")
-    return redirect(url_for("pages.listadeprofessores"))
+
+        if user_teacher:
+            user_teacher.is_teacher = True
+            db.session.commit()
+
+            flash("Professor confirmado com sucesso!", "sucesso")
+            return redirect(url_for("pages.listadeprofessores"))
+
+        flash("Usuário não é professor!", "erro")
+        return redirect(url_for("pages.dashboard"))
+    
+    flash("Você não tem permissão para confirmar professores!", "erro")
+    return redirect(url_for("pages.dashboard"))
 
 @pages_bp.route("/p_excluir/<int:teacher_id>")
 def excluir_teacher(teacher_id):
@@ -426,7 +436,8 @@ def excluir_teacher(teacher_id):
         flash("Professor excluído com sucesso!", "sucesso")
         return redirect(url_for("pages.listadeprofessores"))
     else:
-        return redirect(url_for("pages.listadeprofessores"))
+        flash("Erro ao tentar excluir professor!", "erro")
+        return redirect(url_for("pages.dashboard"))
 
 @pages_bp.route("/criar-atividade", methods=["POST"])
 @login_required

@@ -433,7 +433,7 @@ def excluir_teacher(teacher_id):
         return redirect(url_for("pages.dashboard"))
 
     user_teacher = user.query.filter_by(id=teacher_id, is_teacher=False, matricula=None, turma_id=None).first()   
-    
+
     if user_teacher:
         db.session.delete(user_teacher)
         db.session.commit()
@@ -517,10 +517,39 @@ def download_files(id_atividade, id_student):
 @pages_bp.route("/corrigir-atividade/<int:id_atividade>/<int:id_student>", methods=["POST"])
 @login_required
 def corrigir_atividade(id_atividade, id_student):
+
+    if not current_user.is_teacher:
+        flash("Você não tem permissão para corrigir atividades.", "erro")
+        return redirect(url_for("pages.dashboard"))
+
+    ativ = db.session.get(atividade, id_atividade)
+    if not ativ:
+        flash("Atividade não encontrada.", "erro")
+        return redirect(url_for("pages.dashboard"))
+    
+    materia_obj = db.session.get(materia, ativ.materia_id)
+
+    if materia_obj.user_id != current_user.id:
+        flash("Você não tem permissão para corrigir atividades desta matéria.", "erro")
+        return redirect(url_for("pages.dashboard"))
+    
     atividade_ref = dire_aluno.query.filter_by(relacao_atividade = id_atividade, id_aluno = id_student).first()
+    if not atividade_ref:
+        flash("Entrega não encontrada.", "erro")
+        return redirect(url_for("pages.aluno", student_id=id_student))
 
-    nota = float(request.form.get("nota", "").strip().replace(",", "."))
+    try:
+        nota = float(request.form.get("nota", "").strip().replace(",", "."))
+    except ValueError:
+        flash("Nota inválida.", "erro")
+        return redirect(url_for("pages.aluno", student_id=id_student))
 
+    nota_max = ativ.valor if ativ.valor is not None else 10
+
+    if not 0 <= nota <= nota_max:
+        flash(f"A nota deve estar entre 0 e {nota_max}.", "erro")
+        return redirect(url_for("pages.aluno", student_id=id_student)) 
+    
     atividade_ref.nota = nota
     atividade_ref.status = "corrigida"
 
@@ -532,6 +561,10 @@ def corrigir_atividade(id_atividade, id_student):
 @pages_bp.route("/revisar/atividade/<int:id_atividade>/<int:id_student>", methods=["POST"])
 @login_required
 def revisar_atividade(id_atividade, id_student):
+    if not current_user.is_teacher:
+        flash("Você não tem permissão para revisar atividades.", "erro")
+        return redirect(url_for("pages.dashboard"))
+    
     atividade_ref = dire_aluno.query.filter_by(relacao_atividade = id_atividade, id_aluno = id_student).first()
 
     atividade_ref.status = "pendente"

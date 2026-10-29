@@ -20,6 +20,12 @@ def create_app():
     def pagina_nao_encontrada(error):
         return render_template("page404.html"), 404
 
+    secret_key = os.getenv('KEY')
+    database_url = os.getenv('DATABASE_URL')
+
+    if not secret_key or not database_url:
+        raise ValueError("KEY e DATABASE_URL devem estar definidas no arquivo .env")
+
     app.config['SECRET_KEY'] = os.getenv('KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     

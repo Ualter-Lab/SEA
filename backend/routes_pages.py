@@ -407,7 +407,6 @@ def logout_materia(materia_id):
 @pages_bp.route("/p_confirmar/<int:teacher_id>")
 @login_required
 def confirmar_professor(teacher_id):
-    
     if current_user.is_teacher:
 
         user_teacher = user.query.filter_by(id=teacher_id, is_teacher=False, matricula=None, turma_id=None).first()
@@ -427,9 +426,14 @@ def confirmar_professor(teacher_id):
     return redirect(url_for("pages.dashboard"))
 
 @pages_bp.route("/p_excluir/<int:teacher_id>")
+@login_required
 def excluir_teacher(teacher_id):
-    user_teacher = user.query.get(teacher_id)
+    if not current_user.is_teacher:
+        flash("Você não tem permissão para excluir professores!", "erro")
+        return redirect(url_for("pages.dashboard"))
 
+    user_teacher = user.query.filter_by(id=teacher_id, is_teacher=False, matricula=None, turma_id=None).first()   
+    
     if user_teacher:
         db.session.delete(user_teacher)
         db.session.commit()

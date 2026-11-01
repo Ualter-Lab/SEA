@@ -26,7 +26,7 @@ if (inputMatricula) inputMatricula.required = !éProfessor;
 }
 
 // Escuta a mudança no select
-campoCurso.addEventListener("change", gerenciarCampos);
+campoCurso?.addEventListener("change", gerenciarCampos);
 
 // Executa uma vez ao carregar a página para alinhar o estado inicial
 document.addEventListener("DOMContentLoaded", gerenciarCampos);

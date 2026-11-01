@@ -28,6 +28,10 @@ def create_app():
 
     app.config['SECRET_KEY'] = os.getenv('KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+
+    files_path = os.getenv("FILES_PATH")
+    if not files_path:
+        raise RuntimeError("FILES_PATH não definido no .env")
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     

@@ -330,6 +330,10 @@ def register():
 @pages_bp.route("/criar-matéria", methods=["POST"])
 @login_required
 def criar_materia():
+    if not current_user.is_teacher:
+        flash("Você não tem permissão para criar matérias.", "erro")
+        return redirect(url_for("pages.dashboard"))
+    
     materia_name = request.form["materia"]
     user_id = current_user.id
 

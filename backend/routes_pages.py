@@ -354,7 +354,16 @@ def criar_materia():
 @pages_bp.route("/excluir_materia/<int:id>", methods=["POST"])
 @login_required
 def excluir_materia(id):
+    if not current_user.is_teacher:
+        flash("Você não tem permissão para excluir matérias.", "erro")
+        return redirect(url_for("pages.dashboard"))
+
     materia_obj = db.session.get(materia, id)
+
+    if not materia_obj:
+        flash("Matéria não encontrada!", "erro")
+        return redirect(url_for("pages.dashboard"))
+
     id_teacher = materia_obj.user_id
     teacher = db.session.get(user, id_teacher)
     password_hash = teacher.password

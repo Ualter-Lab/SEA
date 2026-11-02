@@ -564,6 +564,10 @@ def revisar_atividade(id_atividade, id_student):
     if not current_user.is_teacher:
         flash("Você não tem permissão para revisar atividades.", "erro")
         return redirect(url_for("pages.dashboard"))
+
+    if not id_atividade or not id_student:
+        flash("ID da atividade ou do aluno não existem.", "erro")
+        return redirect(url_for("pages.dashboard"))
     
     atividade_ref = dire_aluno.query.filter_by(relacao_atividade = id_atividade, id_aluno = id_student).first()
 

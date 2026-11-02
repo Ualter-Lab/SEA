@@ -515,6 +515,10 @@ def update_files(id_atividade):
 @pages_bp.route("/download-files/<int:id_atividade>/<int:id_student>", methods=["GET"])
 @login_required
 def download_files(id_atividade, id_student):
+    if not current_user.is_teacher:
+        flash("Você não tem permissão para baixar arquivos.", "erro")
+        return redirect(url_for("pages.dashboard"))
+    
     atividade_ref = dire_aluno.query.filter_by(relacao_atividade = id_atividade, id_aluno = id_student).first()
 
     caminho = os.path.abspath(

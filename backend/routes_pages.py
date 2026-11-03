@@ -504,7 +504,7 @@ def update_files(id_atividade):
     
 
     file = request.files.get('arquivo')
-    atividade_name = file.filename
+    atividade_name = secure_filename(file.filename)
 
     if not file or file.filename == '':
         return "Nenhum arquivo encontrado", 400

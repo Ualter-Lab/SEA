@@ -73,6 +73,10 @@ def cadastro():
 @pages_bp.route("/aluno/<int:student_id>")
 @login_required
 def aluno(student_id):
+    if not current_user.is_teacher:
+        flash("Você não tem permissão para acessar o perfil deste aluno.", "erro")
+        return redirect(url_for("pages.dashboard"))
+
     # Procura do estudante
     student_url_id = db.session.get(user, student_id)
 

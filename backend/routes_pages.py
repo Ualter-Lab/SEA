@@ -393,7 +393,19 @@ def excluir_materia(id):
 @pages_bp.route("/entrar_matéria", methods=["POST"])
 @login_required
 def entrar_materia():
+
     id_materia = request.form["id_materia"]
+
+    busca_materia = db.session.get(materia, id_materia)
+
+    if busca_materia:
+        materia_ref = materias_ref.query.filter_by(id_user=current_user.id, id_materia=id_materia).first()
+        if materia_ref:
+            flash("Você já está inscrito nessa matéria!", "erro")
+            return redirect(url_for("pages.materias"))
+    else:
+        flash("Matéria não encontrada!", "erro")
+        return redirect(url_for("pages.materias"))
 
     user_id = current_user.id
 

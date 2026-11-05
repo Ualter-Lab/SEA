@@ -2,10 +2,11 @@ from flask import Blueprint, render_template, url_for, redirect, request, flash,
 from flask_login import current_user, login_user, logout_user, login_required  # type: ignore
 from werkzeug.utils import secure_filename # type: ignore
 from sqlalchemy.exc import IntegrityError # type: ignore
+from werkzeug.security import generate_password_hash, check_password_hash  # type: ignore
 import os
 from . import db
 from .models import user, turma, materia, materias_ref, atividade, dire_aluno
-from werkzeug.security import generate_password_hash, check_password_hash  # type: ignore
+from backend import limiter
 
 CURSOS_VALIDOS = {
     "Professor",
@@ -282,6 +283,7 @@ def turma_list(classroom_id):
 
 
 @pages_bp.route("/login", methods=["POST"])
+@limiter.limit("5 per minute")
 def login_post():
     if current_user.is_authenticated:
         return redirect(url_for("pages.dashboard"))
@@ -291,12 +293,8 @@ def login_post():
 
     usuario = user.query.filter_by(username=username).first()
 
-    if not usuario:
-        flash("Usuário não encontrado", "erro")
-        return redirect(url_for("pages.login"))
-
-    if not check_password_hash(usuario.password, password):
-        flash("Senha incorreta", "erro")
+    if not usuario or not check_password_hash(usuario.password, password):
+        flash("Senha ou usuário incorreto", "erro")
         return redirect(url_for("pages.login"))
 
     login_user(usuario)

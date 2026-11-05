@@ -3,6 +3,8 @@ from flask import Flask, render_template # type: ignore
 from flask_login import LoginManager # type: ignore
 from dotenv import load_dotenv
 import flask_sqlalchemy #type: ignore
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 db = flask_sqlalchemy.SQLAlchemy()
 login_manager = LoginManager()
@@ -12,6 +14,7 @@ def create_app():
     load_dotenv()
 
     template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'templates'))
+
     
     app = Flask(__name__, template_folder=template_dir)
 
@@ -26,6 +29,8 @@ def create_app():
     if not secret_key or not database_url:
         raise ValueError("KEY e DATABASE_URL devem estar definidas no arquivo .env")
 
+    limiter = Limiter(key_func=get_remote_address)
+
     app.config['SECRET_KEY'] = os.getenv('KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
@@ -38,13 +43,14 @@ def create_app():
     app.config['SESSION_COOKIE_HTTPONLY'] = True   
     app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024 
         
-    db.init_app(app)
 
     from . import models
 
     from .routes_pages import pages_bp
     app.register_blueprint(pages_bp)
 
+    db.init_app(app)
+    limiter.init_app(app)
     login_manager.init_app(app)
 
 

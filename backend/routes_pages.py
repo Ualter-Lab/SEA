@@ -409,6 +409,12 @@ def entrar_materia():
 
     user_id = current_user.id
 
+    ja_matriculado = materias_ref.query.filter_by(id_user=user_id, id_materia=id_materia).first()
+
+    if ja_matriculado:
+        flash("Você já está matriculado nessa matéria.", "erro")
+        return redirect(url_for("pages.materias"))
+
     new_materias_ref = materias_ref(
         id_user=user_id, id_materia=id_materia
     )
@@ -501,6 +507,12 @@ def criar_atividade():
 def update_files(id_atividade):
     atividade_obj = db.session.get(atividade, id_atividade)
     materia_id = atividade_obj.materia_id
+
+    ja_entregue = dire_aluno.query.filter_by(id_aluno=current_user.id, relacao_atividade=id_atividade).first()
+
+    if ja_entregue:
+        flash("Você já enviou essa atividade.", "erro")
+        return redirect(url_for("pages.atividades", materia_id=materia_id))
     
 
     file = request.files.get('arquivo')

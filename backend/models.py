@@ -39,6 +39,10 @@ class atividade(db.Model):
 
 class dire_aluno(db.Model):
     __tablename__ = 'dire_aluno'
+    __table_args__ = (
+        db.UniqueConstraint('id_aluno', 'relacao_atividade', name='uq_entrega_unica'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     id_aluno = db.Column(db.Integer,  db.ForeignKey('user.id'), nullable=False)
     status = db.Column(db.String(40))
@@ -51,6 +55,10 @@ class dire_aluno(db.Model):
 
 class materias_ref(db.Model):
     __tablename__ = 'materias_ref'
+    __table_args__ = (
+        db.UniqueConstraint('id_user', 'id_materia', name='uq_matricula_unica'),
+    )
+    
     id = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False )
     id_materia = db.Column(db.Integer, db.ForeignKey("materia.id"), nullable=False)

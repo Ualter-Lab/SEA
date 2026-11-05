@@ -1,10 +1,23 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash, send_file  # type: ignore
 from flask_login import current_user, login_user, logout_user, login_required  # type: ignore
+from werkzeug.utils import secure_filename # type: ignore
+from sqlalchemy.exc import IntegrityError # type: ignore
+import os
 from . import db
 from .models import user, turma, materia, materias_ref, atividade, dire_aluno
 from werkzeug.security import generate_password_hash, check_password_hash  # type: ignore
-from werkzeug.utils import secure_filename # type: ignore
-import os
+
+CURSOS_VALIDOS = {
+    "Professor",
+    "Desenvolvimento de Sistema",
+    "Meio Ambiente",
+    "Guia de Turismo",
+    "Instrumento Musical",
+    "Hospedagem",
+}
+SERIES_VALIDAS = {"1", "2", "3"}
+TURMAS_VALIDAS = {"A", "B"}
+SENHA_MIN = 8
 
 pages_bp = Blueprint("pages", __name__)
 
@@ -302,28 +315,50 @@ def logout():
 
 @pages_bp.route("/register", methods=["POST"])
 def register():
-    name = request.form["name"]
-    username = request.form["username"]
-    curso = request.form["curso"]
-    serie = request.form.get("serie")
-    turma_valor = request.form.get("turma")
-    matricula = request.form.get("matricula")
-    password = request.form["password"]
+    name = request.form.get("name", "").strip()
+    username = request.form.get("username", "").strip()
+    curso = request.form.get("curso", "").strip()
+    serie = request.form.get("serie", "").strip()
+    turma_valor = request.form.get("turma", "").strip()
+    matricula = request.form.get("matricula", "").strip()
+    password = request.form.get("password", "")
 
-    usuario_existente = user.query.filter_by(username=username).first()
-
-    if usuario_existente:
-        flash("Esse usuário já existe", "erro")
+    if not name or len(name) > 80:
+        flash("Nome inválido.", "erro")
         return redirect(url_for("pages.login"))
 
-    if not serie or serie.strip() == "":
-        serie = None
+    if not username or len(username) > 80:
+        flash("Usuário inválido.", "erro")
+        return redirect(url_for("pages.login"))
 
-    if not turma_valor or turma_valor.strip() == "":
-        turma_valor = None
+    if len(password) < SENHA_MIN:
+        flash(f"A senha deve ter no mínimo {SENHA_MIN} caracteres.", "erro")
+        return redirect(url_for("pages.login"))
 
-    if not matricula or matricula.strip() == "":
-        matricula = None
+    if curso not in CURSOS_VALIDOS:
+        flash("Curso inválido.", "erro")
+        return redirect(url_for("pages.login"))
+
+    is_professor = curso == "Professor"
+
+    serie = None if is_professor else serie
+    turma_valor = None if is_professor else turma_valor
+    matricula = None if is_professor else matricula
+
+    if not is_professor:
+        if serie not in SERIES_VALIDAS:
+            flash("Série inválida.", "erro")
+            return redirect(url_for("pages.login"))
+
+        if turma_valor not in TURMAS_VALIDAS:
+            flash("Turma inválida.", "erro")
+            return redirect(url_for("pages.login"))
+
+        if not matricula.isdigit():
+            flash("Matrícula deve ser numérica.", "erro")
+            return redirect(url_for("pages.login"))
+
+        matricula = int(matricula)
 
     password_hashed = generate_password_hash(password)
 
@@ -346,11 +381,16 @@ def register():
     )
 
     db.session.add(new_user)
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        flash("Usuário ou matrícula já cadastrados.", "erro")
+        return redirect(url_for("pages.login"))
 
     flash("Cadastro realizado com sucesso!", "sucesso")
     return redirect(url_for("pages.login"))
-
 
 @pages_bp.route("/criar-matéria", methods=["POST"])
 @login_required

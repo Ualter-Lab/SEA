@@ -212,20 +212,41 @@ def submateria(materia_id):
         return redirect(url_for("pages.dashboard"))
 
     m = db.session.get(materia, materia_id)
-    nome = m.materia_name
+    if not m:
+        flash("Matéria não encontrada.", "erro")
+        return redirect(url_for("pages.materias"))
 
-    nota_materia = dire_aluno.query.filter_by(id_aluno=current_user.id, relacao_atividade=materia_id).all()
+    matriculado = materias_ref.query.filter_by(
+        id_user=current_user.id, id_materia=materia_id
+    ).first()
+    if not matriculado:
+        flash("Você não está matriculado nessa matéria.", "erro")
+        return redirect(url_for("pages.materias"))
 
-    sum_nota_materia = sum(n.nota for n in nota_materia if n.nota is not None)
+    entregas = (
+        dire_aluno.query
+        .join(atividade, dire_aluno.relacao_atividade == atividade.id)
+        .filter(
+            dire_aluno.id_aluno == current_user.id,
+            atividade.materia_id == materia_id,
+        )
+        .all()
+    )
 
-    len_nota_materia = dire_aluno.query.filter_by(id_aluno=current_user.id, relacao_atividade=materia_id).count()
+    notas_validas = [e.nota for e in entregas if e.nota is not None]
 
-    nota_materia = sum_nota_materia / len_nota_materia if len_nota_materia > 0 else 0
+    nota_materia = sum(notas_validas) / len(notas_validas) if notas_validas else 0
     nota_materia = round(nota_materia, 2)
     nota_formatada = f"{nota_materia:.2f}".replace(".", ",")
 
-    return render_template("subpage.html", modo="submateria", nome=nome, materia_id=materia_id, 
-    nota_materia=nota_materia, nota_formatada=nota_formatada)
+    return render_template(
+        "subpage.html",
+        modo="submateria",
+        nome=m.materia_name,
+        materia_id=materia_id,
+        nota_materia=nota_materia,
+        nota_formatada=nota_formatada,
+    )
 
 
 @pages_bp.route("/turma/<int:classroom_id>")
